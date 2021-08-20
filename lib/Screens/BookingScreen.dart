@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:connectivity/connectivity.dart';
+
 import 'package:cool_alert/cool_alert.dart';
 import 'package:dio/dio.dart';
 import 'package:drycarwash/Models/PackageModel.dart';
@@ -44,22 +44,7 @@ class BookingScreenState extends State<BookingScreen> {
   }
 
 
-  checkConnection() async{
-    var connection = await Connectivity().checkConnectivity();
-    if(connection == ConnectivityResult.none){
-      CoolAlert.show(
-          context: context,
-          type: CoolAlertType.error,
-          text: "No Internet Connection",
-          confirmBtnColor: Colors.red,
-          barrierDismissible: false,
-          animType: CoolAlertAnimType.slideInDown,
-          backgroundColor: Colors.redAccent);
-    }
-    else{
-      print("Internet access he");
-    }
-  }
+
 
   @override
   void initState() {
@@ -68,7 +53,6 @@ class BookingScreenState extends State<BookingScreen> {
     super.initState();
     getTimeSlot();
     getUserId();
-    checkConnection();
 
   }
 
@@ -150,7 +134,7 @@ class BookingScreenState extends State<BookingScreen> {
             context: context,
             type: CoolAlertType.info,
             text: "Please select other time slot it has a booking",
-            autoCloseDuration: Duration(seconds: 2),
+            autoCloseDuration: Duration(seconds: 1),
             confirmBtnColor: Colors.blueAccent,
             barrierDismissible: true,
             animType: CoolAlertAnimType.slideInUp,
@@ -164,7 +148,14 @@ class BookingScreenState extends State<BookingScreen> {
 
       }
       else {
-        checkConnection();
+        CoolAlert.show(
+            context: context,
+            type: CoolAlertType.error,
+            text: "Server Not Responding",
+            confirmBtnColor: Colors.red,
+            barrierDismissible: false,
+            animType: CoolAlertAnimType.slideInDown,
+            backgroundColor: Colors.redAccent);
       }
 
     } else {

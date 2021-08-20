@@ -1,3 +1,4 @@
+
 import 'package:cool_alert/cool_alert.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -49,6 +50,7 @@ class AppointmentScreenState extends State<AppointmentScreen>{
   void initState(){
     // TODO: implement initState
     super.initState();
+
     getAppointments();
 
   }
@@ -93,7 +95,14 @@ class AppointmentScreenState extends State<AppointmentScreen>{
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
     } else {
-      print("Error...");
+      CoolAlert.show(
+          context: context,
+          type: CoolAlertType.error,
+          text: "Server Not Responding",
+          confirmBtnColor: Colors.red,
+          barrierDismissible: false,
+          animType: CoolAlertAnimType.slideInDown,
+          backgroundColor: Colors.redAccent);
     }
   }
 

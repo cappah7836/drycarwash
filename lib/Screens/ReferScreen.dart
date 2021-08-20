@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pie_chart/pie_chart.dart';
+import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ReferScreen extends StatefulWidget {
@@ -23,7 +24,7 @@ class ReferScreenState extends State<ReferScreen>{
 
 
   var response;
-  var addedpoints, usedpoints;
+  var addedpoints ,usedpoints;
 
 
   ReferPoints() async {
@@ -40,8 +41,8 @@ class ReferScreenState extends State<ReferScreen>{
 
 
       setState(() {
-        addedpoints =response.data["obj"][0]["pointS_ADDED"];
-        usedpoints = response.data["obj"][0]["poinT_USED"];
+        addedpoints =response.data["obj"][0]["pointS_ADDED"].toDouble();
+        usedpoints = response.data["obj"][0]["poinT_USED"].toDouble();
         print(addedpoints);
         print(usedpoints);
       });
@@ -84,7 +85,7 @@ class ReferScreenState extends State<ReferScreen>{
   static const _yurl = "https://www.youtube.com/channel/UClhedk-dSnqDdw_uCsp0GyA";
   static const _furl = "https://www.facebook.com/drycarwashpk/";
   static const _iurl = "https://www.instagram.com/drycarwashpk/";
-
+  static const _url = "https://drycarwashcustomer.page.link/DZP9ScjqvvSepsat9";
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -149,8 +150,8 @@ class ReferScreenState extends State<ReferScreen>{
 
                             child: PieChart(
                               dataMap: {
-                                "Total Points": /*addedpoints !=null ? addedpoints :*/ 0,
-                                "Used Points": /*usedpoints!= null ? usedpoints :*/ 0,
+                                "Total Points": addedpoints !=null ? addedpoints : 0,
+                                "Used Points": usedpoints!= null ? usedpoints : 0,
                               },
                               animationDuration: Duration(milliseconds: 200),
                               colorList: [
@@ -270,13 +271,15 @@ class ReferScreenState extends State<ReferScreen>{
                   ),
                   Spacer(),
                   Align(
-
+                    alignment: Alignment.bottomCenter,
                     child: Container(
                       child: Row(
                         children: [
                           Expanded(child: RaisedButton(
                             elevation: 5,
-                            onPressed:_launchURL,
+                            onPressed:(){
+                              Share.share("I am ${widget.user} and inviting you to Use my Refferal link:$_url to get a reward of 20 points");
+                            },
                             padding: EdgeInsets.all(15),
                             color: Color(0xff388E3C),
                             child: Row(
@@ -290,7 +293,7 @@ class ReferScreenState extends State<ReferScreen>{
                                 Text(
                                   'Invite',
                                   style: TextStyle(
-                                    fontSize: 10,
+                                    fontSize: 8,
                                     fontWeight: FontWeight.w700,
                                     color: Colors.white,
                                   ),
@@ -319,7 +322,7 @@ class ReferScreenState extends State<ReferScreen>{
                                 Text(
                                   'Like',
                                   style: TextStyle(
-                                    fontSize: 10,
+                                    fontSize: 8,
                                     fontWeight: FontWeight.w700,
                                     color: Colors.white,
                                   ),
@@ -332,35 +335,34 @@ class ReferScreenState extends State<ReferScreen>{
 
                           ),
                           ),
-                          Expanded(child: RaisedButton(
-                            elevation: 5,
-                            onPressed: _launchURLinsta,
-                            padding: EdgeInsets.all(15),
-                            color: Color(0xff388E3C),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Icon(
-                                  FontAwesomeIcons.instagram,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
-                                Text(
-                                  'Instagram',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w700,
+                          Expanded(
+                            child: RaisedButton(
+                              elevation: 5,
+                              onPressed: _launchURLinsta,
+                              padding: EdgeInsets.all(15),
+                              color: Color(0xff388E3C),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Icon(
+                                    FontAwesomeIcons.instagram,
                                     color: Colors.white,
+                                    size: 20,
                                   ),
+                                  Text(
+                                    'Instagram',
+                                    style: TextStyle(
+                                      fontSize: 8,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
 
-                                ),
-
-
-                              ],
                             ),
+                          ),
 
-                          ),
-                          ),
                           Expanded(child: RaisedButton(
                             elevation: 5,
                             onPressed: _launchURLyoutube,
@@ -377,7 +379,7 @@ class ReferScreenState extends State<ReferScreen>{
                                 Text(
                                   'Youtube',
                                   style: TextStyle(
-                                    fontSize: 10,
+                                    fontSize: 8,
                                     fontWeight: FontWeight.w700,
                                     color: Colors.white,
                                   ),

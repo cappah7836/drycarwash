@@ -1,4 +1,4 @@
-import 'package:connectivity/connectivity.dart';
+
 import 'package:cool_alert/cool_alert.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,7 +22,7 @@ class OffersScreenState extends State<OffersScreen> {
     // TODO: implement initState
     super.initState();
     getSpecialOffers();
-    checkConnection();
+/*    checkConnection();*/
   }
 
   var responseoffers;
@@ -40,10 +40,17 @@ class OffersScreenState extends State<OffersScreen> {
         isLoading = false;
       });
     } else {
-      print("Error...");
+      CoolAlert.show(
+          context: context,
+          type: CoolAlertType.error,
+          text: "Server Not Responding",
+          confirmBtnColor: Colors.red,
+          barrierDismissible: false,
+          animType: CoolAlertAnimType.slideInDown,
+          backgroundColor: Colors.redAccent);
     }
   }
-  checkConnection() async{
+  /*checkConnection() async{
     var connection = await Connectivity().checkConnectivity();
     if(connection == ConnectivityResult.none){
       CoolAlert.show(
@@ -58,21 +65,8 @@ class OffersScreenState extends State<OffersScreen> {
     else{
       print("Internet access he");
     }
-  }
-  // This function is called whenever the text field changes
-  void _runFilter(String enteredKeyword) {
-    List<dynamic> results = [];
-    if (enteredKeyword.isEmpty) {
-      // if the search field is empty or only contains white-space, we'll display all users
-      results = responseoffers.data;
-    } else {
-      results = responseoffers.data
-          .where((user) =>
-          user["PackageName"].toLowerCase().contains(enteredKeyword.toLowerCase()))
-          .toList();
+  }*/
 
-    }
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,27 +93,19 @@ class OffersScreenState extends State<OffersScreen> {
     padding: EdgeInsets.all(8),
     child: Column(
       children: [
-      /*  TextField(
-          onChanged: (value) => _runFilter(value),
-          decoration: InputDecoration(
-            labelText: 'Search',
-            suffixIcon: Icon(Icons.search),
-          ),
-        ),
-        SizedBox(
-          height: 20,
-        ),*/
+
         Expanded(
             child: ListView.builder(
               itemCount: responseoffers.data.length,
-              itemBuilder: (context, index) => Card(
-                color: Colors.white,
-                elevation: 5,
-                margin: EdgeInsets.all(5),
-                child:Column(
-                  children: [
-                    SizedBox(
-                      height: 10,),
+              itemBuilder: (context, index){
+                return Card(
+                  color: Colors.white,
+                  elevation: 5,
+                  margin: EdgeInsets.all(5),
+                  child:Column(
+                    children: [
+                      SizedBox(
+                        height: 10,),
                       Row(
                         mainAxisAlignment:
                         MainAxisAlignment.start,
@@ -133,49 +119,39 @@ class OffersScreenState extends State<OffersScreen> {
                           ),
                         ],
                       ),
-                    SizedBox(
-                      height: 10,),
-                    Container(
-                      height: 1,
-                      color: Colors.grey[400],
-                    ),
-                    SizedBox(
-                      height: 10,),
+                      SizedBox(
+                        height: 10,),
+                      Container(
+                        height: 1,
+                        color: Colors.grey[400],
+                      ),
+                      SizedBox(
+                        height: 10,),
                       Padding(
                         padding: EdgeInsets.only(top: 5),
-                        child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              width: 10,
-                            ),
 
-                            Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
-                              mainAxisAlignment:
-                              MainAxisAlignment.center,
+                          child: Column(
+
                               children: [
-                                Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
-                                  children: [
-                                  Text(
-                                    "Actual Amount",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                      color: Colors.redAccent,
-                                    ),
-                                  ),
-                                      SizedBox(width: 200,),
-                                      Column(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
+
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+
+                                    children: [
+
+                                      Text(
+                                        "Actual Amount",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                          color: Colors.redAccent,
+                                        ),
+                                      ),
+
+
                                           Text(
                                             responseoffers.data[index]
                                             ['Price'].toString(),
@@ -187,61 +163,56 @@ class OffersScreenState extends State<OffersScreen> {
                                             ),
                                           ),
 
-                                        ],
-                                      ),
 
 
-                                ],
-                                ),
-
-                                SizedBox(height: 10,),
-                                Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
-                                  children: [
-                                  Text(
-                                    "Discounted Rate",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                      color: Colors.green,
-                                    ),
+                                    ],
                                   ),
-                                    SizedBox(width: 190,),
-                                    Column(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          responseoffers.data[index]
-                                          ['Discounted_Rate'].toString(),
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 14,
-                                            color: Colors.green,
+                                ),
+                                SizedBox(height: 10,),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                  child: Row(
 
-                                          ),
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Discounted Rate",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                          color: Colors.green,
                                         ),
+                                      ),
+                                      Text(
+                                        responseoffers.data[index]
+                                        ['Discounted_Rate'].toString(),
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 14,
+                                          color: Colors.green,
 
-                                      ],
-                                    ),
-                                ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
 
-                          ],
-                        ),
+
+
                       ),
-                    SizedBox(
-                      height: 10,),
+                      SizedBox(
+                        height: 10,),
 
-                  ],
-                ),
+                    ],
+                  ),
 
-        ),
+                );
+              }
+
+
             ),
         ),
       ],
@@ -251,5 +222,10 @@ class OffersScreenState extends State<OffersScreen> {
   ),
     );
   }
+
+
+
+
+
 
 }

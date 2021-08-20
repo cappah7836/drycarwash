@@ -153,7 +153,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                       buildEmail(),
                       SizedBox(height: 10),
                       buildMobileNo(),
-                      Text("Please enter no starting from 3*********"),
+                      Text("Please enter number starting from 323*******"),
                       SizedBox(height: 10),
                       buildPassword(),
                       SizedBox(height: 10),

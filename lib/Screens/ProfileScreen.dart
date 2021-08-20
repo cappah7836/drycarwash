@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:drycarwash/components/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'LoginScreen.dart';
@@ -21,6 +22,7 @@ class MapScreenState extends State<ProfileScreen>{
   String? cmpassword;
   String uname="";
   String uphone="";
+  String? uno;
   bool isLoading = true;
 
   getUserData()async{
@@ -115,7 +117,7 @@ class MapScreenState extends State<ProfileScreen>{
     var formData = FormData.fromMap({
       "EMAIL":uemail,
       "CUSTOMER_ID":uid,
-      "MOBILE_NO":phone.text,
+      "MOBILE_NO":"92"+phone.text,
       "CUSTOMER_NAME":uname,
 
     });
@@ -340,7 +342,7 @@ class MapScreenState extends State<ProfileScreen>{
                               return AlertDialog(
                                 title: Text('Update your name'),
                                 content: Container(
-                                  height: 120,
+                                  height: 150,
                                   child: Form(
                                     key: _formKey,
                                     child: Column(
@@ -497,7 +499,7 @@ class MapScreenState extends State<ProfileScreen>{
                                   return AlertDialog(
                                     title: Text('Update your mobile number'),
                                     content: Container(
-                                      height: 100,
+                                      height: 150,
                                       child: Form(
                                         key: _formKey2,
                                         child: Column(
@@ -508,6 +510,13 @@ class MapScreenState extends State<ProfileScreen>{
                                             ),
                                             SizedBox(height: 10,),
                                             TextFormField(
+                                              inputFormatters: [
+                                                new LengthLimitingTextInputFormatter(10), // for mobile
+                                                new FilteringTextInputFormatter.deny(RegExp('[\\.|\\,]')),
+                                                FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                                              ],
+                                              keyboardType: TextInputType.number,
+                                              onSaved: (input) => uno = input!.replaceFirst(new RegExp(r'^0+'), ''),
                                               controller: phone,
                                               validator: (value) {
                                                 if (value == null || value.isEmpty) {
@@ -518,10 +527,17 @@ class MapScreenState extends State<ProfileScreen>{
                                                 }
                                                 return null;
                                               },
-                                              keyboardType: TextInputType.phone,
                                               decoration: InputDecoration(
                                                   border: OutlineInputBorder(),
-                                                  hintText: "New mobile number"),
+                                                  hintText: "New mobile number",
+                                                prefixIcon: Padding(
+                                                  padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 15),
+                                                  child: Text(
+                                                    " (+92) ",
+                                                    style: TextStyle(color: Colors.black, fontSize: 15),
+                                                  ),
+                                                ),),
+
                                             ),
 
                                           ],
@@ -579,7 +595,7 @@ class MapScreenState extends State<ProfileScreen>{
                                   return AlertDialog(
                                     title: Text('Update your email'),
                                     content: Container(
-                                      height: 100,
+                                      height: 150,
                                       child: Form(
                                         key: _formKey3,
                                         child: Column(

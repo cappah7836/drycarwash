@@ -1,5 +1,4 @@
-import 'package:connectivity/connectivity.dart';
-import 'package:cool_alert/cool_alert.dart';
+
 
 import 'package:drycarwash/Screens/AboutUsScreen.dart';
 import 'package:drycarwash/Screens/AppointmentScreen.dart';
@@ -12,6 +11,7 @@ import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:math';
@@ -52,28 +52,12 @@ class DashboardScreenState extends State<DashboardScreen> {
     // TODO: implement initState
     // _foundUsers = _allUsers;
     super.initState();
-    checkConnection();
     getUserData();
 
 
   }
 
-  checkConnection() async{
-    var connection = await Connectivity().checkConnectivity();
-    if(connection == ConnectivityResult.none){
-      CoolAlert.show(
-          context: context,
-          type: CoolAlertType.error,
-          text: "No Internet Connection",
-          confirmBtnColor: Colors.red,
-          barrierDismissible: false,
-          animType: CoolAlertAnimType.slideInDown,
-          backgroundColor: Colors.redAccent);
-    }
-    else{
-      print("Internet access he");
-    }
-  }
+
 
 
   //declare variables
@@ -81,6 +65,7 @@ class DashboardScreenState extends State<DashboardScreen> {
   static const _yurl = "https://www.youtube.com/channel/UClhedk-dSnqDdw_uCsp0GyA";
   static const _furl = "https://www.facebook.com/drycarwashpk/";
   static const _iurl = "https://www.instagram.com/drycarwashpk/";
+  static const _url = "https://drycarwashcustomer.page.link/DZP9ScjqvvSepsat9";
 
   @override
   Widget build(BuildContext context) {
@@ -208,9 +193,7 @@ class DashboardScreenState extends State<DashboardScreen> {
                     body: Stack(
 
                       children: [
-
                         Container(
-
                           padding: const EdgeInsets.all(10.0),
                           width: double.infinity,
 
@@ -230,10 +213,10 @@ class DashboardScreenState extends State<DashboardScreen> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       CircleAvatar(
-                                        radius: 45,
+                                        radius: 40,
                                         backgroundColor: Color(0xff43a747),
                                         child: CircleAvatar(
-                                          radius: 40,
+                                          radius: 35,
                                           backgroundImage: AssetImage(
                                               'assets/images/reservation.png'),
                                           backgroundColor: Color(0xffffffff),
@@ -262,10 +245,10 @@ class DashboardScreenState extends State<DashboardScreen> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       CircleAvatar(
-                                        radius: 45,
+                                        radius: 40,
                                         backgroundColor: Color(0xff43a747),
                                         child: CircleAvatar(
-                                          radius: 40,
+                                          radius: 35,
                                           backgroundImage: AssetImage(
                                               'assets/images/calendar.png'),
                                           backgroundColor: Color(0xffffffff),
@@ -292,10 +275,10 @@ class DashboardScreenState extends State<DashboardScreen> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       CircleAvatar(
-                                        radius: 45,
+                                        radius: 40,
                                         backgroundColor: Color(0xff43a747),
                                         child: CircleAvatar(
-                                          radius: 40,
+                                          radius: 35,
                                           backgroundImage: AssetImage(
                                               'assets/images/man.png'),
                                           backgroundColor: Color(0xffffffff),
@@ -321,10 +304,10 @@ class DashboardScreenState extends State<DashboardScreen> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       CircleAvatar(
-                                        radius: 45,
+                                        radius: 40,
                                         backgroundColor: Color(0xff43a747),
                                         child: CircleAvatar(
-                                          radius: 40,
+                                          radius: 35,
                                           backgroundImage: AssetImage(
                                               'assets/images/discount.png'),
                                           backgroundColor: Color(0xffffffff),
@@ -346,7 +329,7 @@ class DashboardScreenState extends State<DashboardScreen> {
                                 child: InkWell(
                                   onTap: () {
                                     Navigator.push(context, MaterialPageRoute(
-                                        builder: (context) => AboutUsScreen()));
+                                        builder: (context) => AboutUsScreen(user: userName)));
                                   },
                                   child: Column(
 
@@ -354,10 +337,10 @@ class DashboardScreenState extends State<DashboardScreen> {
                                     children: [
                                       CircleAvatar(
 
-                                        radius: 45,
+                                        radius: 40,
                                         backgroundColor: Color(0xff43a747),
                                         child: CircleAvatar(
-                                          radius: 40,
+                                          radius: 35,
                                           backgroundImage: AssetImage(
                                               'assets/images/info.png'),
                                           backgroundColor: Color(0xffffffff),
@@ -383,10 +366,10 @@ class DashboardScreenState extends State<DashboardScreen> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       CircleAvatar(
-                                        radius: 45,
+                                        radius: 40,
                                         backgroundColor: Color(0xff43a747),
                                         child: CircleAvatar(
-                                          radius: 40,
+                                          radius: 35,
                                           backgroundImage: AssetImage(
                                               'assets/images/question.png'),
                                           backgroundColor: Color(0xffffffff),
@@ -400,10 +383,12 @@ class DashboardScreenState extends State<DashboardScreen> {
                                   ),
                                 ),
 
-                              )
+                              ),
+
                             ],
                           ),
                         ),
+                        SizedBox(height: 20,),
                         Align(
                           alignment: Alignment.bottomCenter,
                           child: Container(
@@ -411,7 +396,9 @@ class DashboardScreenState extends State<DashboardScreen> {
                                 children: [
                             Expanded(child: RaisedButton(
                             elevation: 5,
-                                onPressed:(){},
+                                onPressed:(){
+                                Share.share("I am $userName and inviting you to Use my Refferal link:$_url to get a reward of 20 points");
+                                },
                             padding: EdgeInsets.all(15),
                             color: Color(0xff388E3C),
                             child: Row(
@@ -425,7 +412,7 @@ class DashboardScreenState extends State<DashboardScreen> {
                                 Text(
                                   'Invite',
                                   style: TextStyle(
-                                    fontSize: 10,
+                                    fontSize:8,
                                     fontWeight: FontWeight.w700,
                                     color: Colors.white,
                                   ),
@@ -454,7 +441,7 @@ class DashboardScreenState extends State<DashboardScreen> {
                               Text(
                                 'Like',
                                 style: TextStyle(
-                                  fontSize: 10,
+                                  fontSize:8,
                                   fontWeight: FontWeight.w700,
                                   color: Colors.white,
                                 ),
@@ -467,7 +454,8 @@ class DashboardScreenState extends State<DashboardScreen> {
 
                         ),
                         ),
-                        Expanded(child: RaisedButton(
+                        Expanded(
+                          child: RaisedButton(
                           elevation: 5,
                           onPressed: _launchURLinsta,
                           padding: EdgeInsets.all(15),
@@ -480,22 +468,22 @@ class DashboardScreenState extends State<DashboardScreen> {
                                 color: Colors.white,
                                 size: 20,
                               ),
-                              Text(
-                                'Instagram',
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
+
+                                Text(
+                                  'Instagram',
+                                  style: TextStyle(
+                                    fontSize:8,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                  ),
                                 ),
-
-                              ),
-
 
                             ],
                           ),
 
                         ),
                         ),
+
                         Expanded(child: RaisedButton(
                           elevation: 5,
                           onPressed: _launchURLyoutube,
@@ -512,7 +500,7 @@ class DashboardScreenState extends State<DashboardScreen> {
                               Text(
                                 'Youtube',
                                 style: TextStyle(
-                                  fontSize: 10,
+                                  fontSize:8,
                                   fontWeight: FontWeight.w700,
                                   color: Colors.white,
                                 ),

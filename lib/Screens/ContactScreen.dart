@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'DashboardScreen.dart';
@@ -40,7 +41,7 @@ class ContactScreenState extends State<ContactScreen> {
   static const _yurl = "https://www.youtube.com/channel/UClhedk-dSnqDdw_uCsp0GyA";
   static const _furl = "https://www.facebook.com/drycarwashpk/";
   static const _iurl = "https://www.instagram.com/drycarwashpk/";
-
+  static const _url = "https://drycarwashcustomer.page.link/DZP9ScjqvvSepsat9";
 
 
   var response;
@@ -382,7 +383,9 @@ class ContactScreenState extends State<ContactScreen> {
                     children: [
                       Expanded(child: RaisedButton(
                         elevation: 5,
-                        onPressed:_launchURL,
+                        onPressed:(){
+                          Share.share("I am ${widget.user} and inviting you to Use my Refferal link:$_url to get a reward of 20 points");
+                        },
                         padding: EdgeInsets.all(15),
                         color: Color(0xff388E3C),
                         child: Row(
@@ -396,7 +399,7 @@ class ContactScreenState extends State<ContactScreen> {
                             Text(
                               'Invite',
                               style: TextStyle(
-                                fontSize: 10,
+                                fontSize: 8,
                                 fontWeight: FontWeight.w700,
                                 color: Colors.white,
                               ),
@@ -425,7 +428,7 @@ class ContactScreenState extends State<ContactScreen> {
                             Text(
                               'Like',
                               style: TextStyle(
-                                fontSize: 10,
+                                fontSize: 8,
                                 fontWeight: FontWeight.w700,
                                 color: Colors.white,
                               ),
@@ -438,35 +441,34 @@ class ContactScreenState extends State<ContactScreen> {
 
                       ),
                       ),
-                      Expanded(child: RaisedButton(
-                        elevation: 5,
-                        onPressed: _launchURLinsta,
-                        padding: EdgeInsets.all(15),
-                        color: Color(0xff388E3C),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Icon(
-                              FontAwesomeIcons.instagram,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                            Text(
-                              'Instagram',
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w700,
+                      Expanded(
+                        child: RaisedButton(
+                          elevation: 5,
+                          onPressed: _launchURLinsta,
+                          padding: EdgeInsets.all(15),
+                          color: Color(0xff388E3C),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Icon(
+                                FontAwesomeIcons.instagram,
                                 color: Colors.white,
+                                size: 20,
                               ),
+                              Text(
+                                'Instagram',
+                                style: TextStyle(
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
 
-                            ),
-
-
-                          ],
                         ),
+                      ),
 
-                      ),
-                      ),
                       Expanded(child: RaisedButton(
                         elevation: 5,
                         onPressed: _launchURLyoutube,
@@ -483,7 +485,7 @@ class ContactScreenState extends State<ContactScreen> {
                             Text(
                               'Youtube',
                               style: TextStyle(
-                                fontSize: 10,
+                                fontSize: 8,
                                 fontWeight: FontWeight.w700,
                                 color: Colors.white,
                               ),
