@@ -108,7 +108,7 @@ class DashboardScreenState extends State<DashboardScreen> {
                         Text(
                           userName,
                           style: GoogleFonts.encodeSans(
-                              fontSize: 18,
+                              fontSize: 15,
                               color: Colors.white,
                               fontWeight: FontWeight.bold),
                         ),
