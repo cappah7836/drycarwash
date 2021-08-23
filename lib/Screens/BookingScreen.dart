@@ -153,6 +153,9 @@ class BookingScreenState extends State<BookingScreen> {
 
       }
       else if (message == "Please enter complete Info!") {
+        setState(() {
+          Navigator.pop(context);
+        });
         final snackBar =
         SnackBar(content: Text('Alert!, Please enter complete info!'), backgroundColor: Colors.red);
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -977,15 +980,50 @@ class BookingScreenState extends State<BookingScreen> {
       });
   }
   /// This builds cupertion date picker in iOS
-  buildCupertinoDatePicker(BuildContext context) {
+  buildCupertinoDatePicker(BuildContext context) async{
+    bool _decideWhichDayTobeEnable(DateTime day) {
+      if ((day.isAfter(DateTime.now().subtract(Duration(days: 1))) &&
+          day.isBefore(DateTime.now().add(Duration(days: 6))))) {
+        return true;
+      }
+      return false;
+    }
 
-    showModalBottomSheet(
+
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate, // Refer step 1
+      firstDate: DateTime(2021),
+      lastDate: DateTime(2050),
+      selectableDayPredicate: _decideWhichDayTobeEnable,
+      helpText: 'Select booking date', // Can be used as title
+      cancelText: 'Not now',
+      confirmText: 'Book',
+      fieldLabelText: 'Booking date',
+      fieldHintText: 'Month/Date/Year',
+      errorFormatText: 'Enter valid date',
+      errorInvalidText: 'Enter date in valid range',
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData(
+              primarySwatch: Colors.green
+          ), // This will change to light theme.
+          child: Container(child: child),
+        );
+      },
+    );
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+      });
+  /*  showModalBottomSheet(
         context: context,
         builder: (BuildContext builder) {
           return Container(
             height: MediaQuery.of(context).copyWith().size.height / 3,
             color: Colors.white,
             child: CupertinoDatePicker(
+
               mode: CupertinoDatePickerMode.date,
               onDateTimeChanged: (picked) {
                 if (picked != null && picked != selectedDate)
@@ -999,7 +1037,7 @@ class BookingScreenState extends State<BookingScreen> {
 
             ),
           );
-        });
+        });*/
   }
 
   //////////////////////////////////////////////////////
