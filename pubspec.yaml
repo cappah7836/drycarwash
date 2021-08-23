@@ -24,12 +24,11 @@ dependencies:
   flutter:
     sdk: flutter
   google_fonts: ^2.1.0
-  flutter_swiper: ^1.1.6
   provider: ^4.3.1
   shared_preferences: ^2.0.6
-  another_flushbar: ^1.10.24
   url_launcher: ^6.0.9
   flutter_svg: ^0.22.0
+  carousel_slider: ^4.0.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -44,6 +43,7 @@ dependencies:
   avatar_glow: ^2.0.1
   change_app_package_name: ^1.0.0
   share: ^2.0.4
+  connectivity: ^3.0.6
 
 
 

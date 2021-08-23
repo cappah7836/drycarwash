@@ -1,11 +1,10 @@
 
+import 'package:connectivity/connectivity.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-import 'DashboardScreen.dart';
 class OffersScreen extends StatefulWidget {
 
   @override
@@ -21,8 +20,13 @@ class OffersScreenState extends State<OffersScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getSpecialOffers();
-/*    checkConnection();*/
+
+    checkConnection();
+      getSpecialOffers();
+
+
+
+
   }
 
   var responseoffers;
@@ -50,7 +54,7 @@ class OffersScreenState extends State<OffersScreen> {
           backgroundColor: Colors.redAccent);
     }
   }
-  /*checkConnection() async{
+  checkConnection() async{
     var connection = await Connectivity().checkConnectivity();
     if(connection == ConnectivityResult.none){
       CoolAlert.show(
@@ -65,7 +69,7 @@ class OffersScreenState extends State<OffersScreen> {
     else{
       print("Internet access he");
     }
-  }*/
+  }
 
   @override
   Widget build(BuildContext context) {

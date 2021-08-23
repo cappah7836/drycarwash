@@ -1,6 +1,7 @@
 import 'dart:async';
 
 
+import 'package:connectivity/connectivity.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:dio/dio.dart';
 import 'package:drycarwash/Models/PackageModel.dart';
@@ -51,11 +52,27 @@ class BookingScreenState extends State<BookingScreen> {
     // TODO: implement initState
     // _foundUsers = _allUsers;
     super.initState();
+    checkConnection();
     getTimeSlot();
     getUserId();
 
   }
-
+  checkConnection() async{
+    var connection = await Connectivity().checkConnectivity();
+    if(connection == ConnectivityResult.none){
+      CoolAlert.show(
+          context: context,
+          type: CoolAlertType.error,
+          text: "No Internet Connection",
+          confirmBtnColor: Colors.red,
+          barrierDismissible: false,
+          animType: CoolAlertAnimType.slideInDown,
+          backgroundColor: Colors.redAccent);
+    }
+    else{
+      print("Internet access he");
+    }
+  }
   /*Upload Data to Server*/
   var response;
   SendAppointment() async {
@@ -130,15 +147,9 @@ class BookingScreenState extends State<BookingScreen> {
         setState(() {
           Navigator.pop(context);
         });
-        CoolAlert.show(
-            context: context,
-            type: CoolAlertType.info,
-            text: "Please select other time slot it has a booking",
-            autoCloseDuration: Duration(seconds: 1),
-            confirmBtnColor: Colors.blueAccent,
-            barrierDismissible: true,
-            animType: CoolAlertAnimType.slideInUp,
-            backgroundColor: Colors.blueAccent);
+        final snackBar =
+        SnackBar(content: Text('Please select other time slot it has a booking'), backgroundColor: Colors.blueAccent);
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
       }
       else if (message == "Please enter complete Info!") {

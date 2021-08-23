@@ -1,4 +1,5 @@
 
+import 'package:connectivity/connectivity.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -50,12 +51,27 @@ class AppointmentScreenState extends State<AppointmentScreen>{
   void initState(){
     // TODO: implement initState
     super.initState();
-
+    checkConnection();
     getAppointments();
 
   }
 
-
+  checkConnection() async{
+    var connection = await Connectivity().checkConnectivity();
+    if(connection == ConnectivityResult.none){
+      CoolAlert.show(
+          context: context,
+          type: CoolAlertType.error,
+          text: "No Internet Connection",
+          confirmBtnColor: Colors.red,
+          barrierDismissible: false,
+          animType: CoolAlertAnimType.slideInDown,
+          backgroundColor: Colors.redAccent);
+    }
+    else{
+      print("Internet access he");
+    }
+  }
   var response;
   var id;
 
@@ -76,7 +92,7 @@ class AppointmentScreenState extends State<AppointmentScreen>{
           context: context,
           type: CoolAlertType.success,
           text: "Appointment cancelled successfully",
-          autoCloseDuration: Duration(seconds: 3),
+          autoCloseDuration: Duration(seconds: 2),
           confirmBtnColor: Theme.of(context).primaryColor,
           barrierDismissible: true,
           animType: CoolAlertAnimType.slideInRight,
