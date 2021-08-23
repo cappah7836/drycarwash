@@ -1,7 +1,7 @@
 
 import 'dart:async';
 
-import 'package:drycarwash/Globals.dart';
+
 import 'package:drycarwash/Screens/DashboardScreen.dart';
 import 'package:drycarwash/Screens/LoginScreen.dart';
 import 'package:flutter/material.dart';

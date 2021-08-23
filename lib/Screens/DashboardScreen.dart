@@ -101,14 +101,14 @@ class DashboardScreenState extends State<DashboardScreen> {
                         Text(
                           "Welcome",
                           style: GoogleFonts.encodeSans(
-                              fontSize: 18,
+                              fontSize: 15,
                               color: Colors.white,
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
                           userName,
                           style: GoogleFonts.encodeSans(
-                              fontSize: 14,
+                              fontSize: 15,
                               color: Colors.white,
                               fontWeight: FontWeight.bold),
                         ),
@@ -222,7 +222,7 @@ class DashboardScreenState extends State<DashboardScreen> {
                                           backgroundColor: Color(0xffffffff),
                                         ),
                                       ),
-                                      SizedBox(height: 10),
+
                                       Text("Book a Service",
                                           style: new TextStyle(
                                               fontSize: 17.0))
@@ -254,7 +254,6 @@ class DashboardScreenState extends State<DashboardScreen> {
                                           backgroundColor: Color(0xffffffff),
                                         ),
                                       ),
-                                      SizedBox(height: 10),
                                       Text("Appointments",
                                           style: new TextStyle(
                                               fontSize: 17.0))
@@ -284,7 +283,6 @@ class DashboardScreenState extends State<DashboardScreen> {
                                           backgroundColor: Color(0xffffffff),
                                         ),
                                       ),
-                                      SizedBox(height: 10),
                                       Text("Profile",
                                           style: new TextStyle(
                                               fontSize: 17.0))
@@ -313,7 +311,6 @@ class DashboardScreenState extends State<DashboardScreen> {
                                           backgroundColor: Color(0xffffffff),
                                         ),
                                       ),
-                                      SizedBox(height: 10),
 
                                       Text("Special Offers",
                                           style: new TextStyle(
@@ -346,7 +343,6 @@ class DashboardScreenState extends State<DashboardScreen> {
                                           backgroundColor: Color(0xffffffff),
                                         ),
                                       ),
-                                      SizedBox(height: 10),
                                       Text("About Us",
                                           style: new TextStyle(
                                               fontSize: 17.0))
@@ -375,7 +371,6 @@ class DashboardScreenState extends State<DashboardScreen> {
                                           backgroundColor: Color(0xffffffff),
                                         ),
                                       ),
-                                      SizedBox(height: 10),
                                       Text("Contact",
                                           style: new TextStyle(
                                               fontSize: 17.0))
@@ -388,7 +383,7 @@ class DashboardScreenState extends State<DashboardScreen> {
                             ],
                           ),
                         ),
-                        SizedBox(height: 20,),
+
                         Align(
                           alignment: Alignment.bottomCenter,
                           child: Container(

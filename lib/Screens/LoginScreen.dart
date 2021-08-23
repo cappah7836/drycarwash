@@ -1,8 +1,5 @@
-import 'dart:math';
 
-import 'package:cool_alert/cool_alert.dart';
 import 'package:dio/dio.dart';
-import 'package:drycarwash/Globals.dart';
 import 'package:drycarwash/Screens/DashboardScreen.dart';
 import 'package:drycarwash/Screens/ForgotScreen.dart';
 import 'package:drycarwash/Screens/RegisterScreen.dart';
