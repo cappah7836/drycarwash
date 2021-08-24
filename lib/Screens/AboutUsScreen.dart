@@ -39,8 +39,8 @@ class AboutScreenState extends State<AboutUsScreen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
         backgroundColor: Color(0xff388E3C),
         title: Text("About Us"),
         centerTitle: true,
@@ -56,158 +56,97 @@ class AboutScreenState extends State<AboutUsScreen> {
       ),
       body: SingleChildScrollView(
         child: Column(
-
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  CarouselSlider(
-                    options: CarouselOptions(
-                      height: 150.0,
-                      autoPlay: true,
-                      autoPlayInterval: Duration(seconds: 2),
-                      autoPlayAnimationDuration: Duration(milliseconds: 800),
-                      autoPlayCurve: Curves.fastOutSlowIn,
-                      pauseAutoPlayOnTouch: true,
-                      aspectRatio: 3.0,
-                      onPageChanged: (index, reason) {
-                        setState(() {
-                          _currentIndex = index;
-                        });
-                      },
-                    ),
-                    items: cardList.map((card) {
-                      return Builder(builder: (BuildContext context) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          height: MediaQuery.of(context).size.height *0.30,
-                          width: MediaQuery.of(context).size.width,
-                          child: Card(
-                            shape: RoundedRectangleBorder(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    CarouselSlider(
+                      options: CarouselOptions(
+                        height: 180.0,
+                        autoPlay: true,
+                        autoPlayInterval: Duration(seconds: 2),
+                        autoPlayAnimationDuration: Duration(milliseconds: 800),
+                        autoPlayCurve: Curves.fastOutSlowIn,
+                        pauseAutoPlayOnTouch: true,
+                        aspectRatio: 3.0,
+                        onPageChanged: (index, reason) {
+                          setState(() {
+                            _currentIndex = index;
+                          });
+                        },
+                      ),
+                      items: cardList.map((card) {
+                        return Builder(builder: (BuildContext context) {
+                          return Container(
+                            decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(30),
                             ),
-                            child: card,
-                          ),
-                        );
-                      });
-                    }).toList(),
-                  ),
-
-                ],
-              ),
-              Container(
-
-                  padding: EdgeInsets.all(10),
-                  child: Flexible(
-                    child: Text(  'Dry car wash is a unique waterless cleaning compound '
-                    'that safely cleans and protects without harming surface paint. Can '
-                    'be applied in direct sunlight. Just Spray away to a perfect high gloss '
-                    'shine. Cleansed, polishes in one precision process. Can be used '
-                    'virtually anywhere, anytime on a wet and dry surface. We are providing '
-                    'these services only in Lahore. Our car detailing team is an expert in '
-                    'precision cleaning, and waxing cars. Our Services include Interior '
-                    'Reconditioning, Engine Bay Cleaning, Exterior Detailing, and application '
-                    'of Protective Coatings on Paint, Leather, trim, Rims, and Fabric. You '
-                    'are our guest as proud car owners and your precious possession is '
-                    'assured of a conditioned and safe environment where we can work to '
-                    'perfection. Our goal is to provide our customers with the friendliest, '
-                    'most convenient car detailing experience. '
-                    'Three simple steps are there (Spray, Wipe & Shine).',
-                    style: GoogleFonts.encodeSans(
-                    color: Colors.black,
-                    fontSize: 17,
-
-                    ),
-                    textAlign: TextAlign.justify,
+                            height: MediaQuery.of(context).size.height *0.30,
+                            width: MediaQuery.of(context).size.width,
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: card,
+                            ),
+                          );
+                        });
+                      }).toList(),
                     ),
 
-                  ),
-                  ),
+                  ],
+                ),
+                Container(
 
-              SizedBox(height:95,),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  child: Row(
-                    children: [
-                      Expanded(child: RaisedButton(
-                        elevation: 5,
-                        onPressed:(){
-                          Share.share("I am ${widget.user} and inviting you to Use my Refferal link:$_url to get a reward of 20 points");
-                        },
-                        padding: EdgeInsets.all(15),
-                        color: Color(0xff388E3C),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Icon(
-                              Icons.share,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                            Text(
-                              'Invite',
-                              style: TextStyle(
-                                fontSize:8,
-                                fontWeight: FontWeight.w700,
+                    padding: EdgeInsets.all(10),
+                      child: Text(  'Dry car wash is a unique waterless cleaning compound '
+                      'that safely cleans and protects without harming surface paint. Can '
+                      'be applied in direct sunlight. Just Spray away to a perfect high gloss '
+                      'shine. Cleansed, polishes in one precision process. Can be used '
+                      'virtually anywhere, anytime on a wet and dry surface. We are providing '
+                      'these services only in Lahore. Our car detailing team is an expert in '
+                      'precision cleaning, and waxing cars. Our Services include Interior '
+                      'Reconditioning, Engine Bay Cleaning, Exterior Detailing, and application '
+                      'of Protective Coatings on Paint, Leather, trim, Rims, and Fabric. You '
+                      'are our guest as proud car owners and your precious possession is '
+                      'assured of a conditioned and safe environment where we can work to '
+                      'perfection. Our goal is to provide our customers with the friendliest, '
+                      'most convenient car detailing experience. '
+                      'Three simple steps are there (Spray, Wipe & Shine).',
+                      style: GoogleFonts.encodeSans(
+                      color: Colors.black,
+                      fontSize: 17,
+
+                      ),
+                      textAlign: TextAlign.justify,
+                      ),
+
+
+                    ),
+
+                SizedBox(height:100,),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    child: Row(
+                      children: [
+                        Expanded(child: RaisedButton(
+                          elevation: 5,
+                          onPressed:(){
+                            Share.share("I am ${widget.user} and inviting you to Use my Refferal link:$_url to get a reward of 20 points");
+                          },
+                          padding: EdgeInsets.all(15),
+                          color: Color(0xff388E3C),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Icon(
+                                Icons.share,
                                 color: Colors.white,
+                                size: 20,
                               ),
-
-                            ),
-
-
-                          ],
-                        ),
-
-                      ),
-                      ),
-                      Expanded(child: RaisedButton(
-                        elevation: 5,
-                        onPressed: _launchURL,
-                        padding: EdgeInsets.all(15),
-                        color: Color(0xff388E3C),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Icon(
-                              Icons.thumb_up_alt_outlined,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                            Text(
-                              'Like',
-                              style: TextStyle(
-                                fontSize:8,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                              ),
-
-                            ),
-
-
-                          ],
-                        ),
-
-                      ),
-                      ),
-                      Expanded(child: RaisedButton(
-                        elevation: 5,
-                        onPressed: _launchURLinsta,
-                        padding: EdgeInsets.all(15),
-                        color: Color(0xff388E3C),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Icon(
-                              FontAwesomeIcons.instagram,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                            Flexible(
-                              child: Text(
-                                'Instagram',
+                              Text(
+                                'Invite',
                                 style: TextStyle(
                                   fontSize:8,
                                   fontWeight: FontWeight.w700,
@@ -215,51 +154,112 @@ class AboutScreenState extends State<AboutUsScreen> {
                                 ),
 
                               ),
-                            ),
 
 
-                          ],
+                            ],
+                          ),
+
                         ),
-
-                      ),
-                      ),
-                      Expanded(child: RaisedButton(
-                        elevation: 5,
-                        onPressed: _launchURLyoutube,
-                        padding: EdgeInsets.all(15),
-                        color: Color(0xff388E3C),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Icon(
-                              FontAwesomeIcons.youtube,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                            Text(
-                              'Youtube',
-                              style: TextStyle(
-                                fontSize:8,
-                                fontWeight: FontWeight.w700,
+                        ),
+                        Expanded(child: RaisedButton(
+                          elevation: 5,
+                          onPressed: _launchURL,
+                          padding: EdgeInsets.all(15),
+                          color: Color(0xff388E3C),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Icon(
+                                Icons.thumb_up_alt_outlined,
                                 color: Colors.white,
+                                size: 20,
+                              ),
+                              Text(
+                                'Like',
+                                style: TextStyle(
+                                  fontSize:8,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                ),
+
                               ),
 
-                            ),
+
+                            ],
+                          ),
+
+                        ),
+                        ),
+                        Expanded(child: RaisedButton(
+                          elevation: 5,
+                          onPressed: _launchURLinsta,
+                          padding: EdgeInsets.all(15),
+                          color: Color(0xff388E3C),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Icon(
+                                FontAwesomeIcons.instagram,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                              Flexible(
+                                child: Text(
+                                  'Instagram',
+                                  style: TextStyle(
+                                    fontSize:8,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                  ),
+
+                                ),
+                              ),
 
 
-                          ],
+                            ],
+                          ),
+
+                        ),
+                        ),
+                        Expanded(child: RaisedButton(
+                          elevation: 5,
+                          onPressed: _launchURLyoutube,
+                          padding: EdgeInsets.all(15),
+                          color: Color(0xff388E3C),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Icon(
+                                FontAwesomeIcons.youtube,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                              Text(
+                                'Youtube',
+                                style: TextStyle(
+                                  fontSize:8,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                ),
+
+                              ),
+
+
+                            ],
+                          ),
+
+                        ),
                         ),
 
-                      ),
-                      ),
 
-
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
 
-            ]),
+              ]
+
+        ),
       ),
 
     );

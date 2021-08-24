@@ -1,4 +1,5 @@
 
+import 'package:cool_alert/cool_alert.dart';
 import 'package:dio/dio.dart';
 import 'package:drycarwash/Screens/DashboardScreen.dart';
 import 'package:drycarwash/Screens/ForgotScreen.dart';
@@ -84,9 +85,10 @@ class LoginScreenState extends State<LoginScreen> {
           preferences.setString("referenceno", uref);
           preferences.setString("password", upass);
           preferences.setInt("points", total_points);
-
+          Navigator.pop(context);
 
         });
+
         final snackBar =
         SnackBar(content: Text('User successfully logged in'), backgroundColor: Colors.green);
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -95,11 +97,17 @@ class LoginScreenState extends State<LoginScreen> {
 
 
       } else if(message == "email or password is incorrect!") {
+        setState(() {
+          Navigator.pop(context);
+        });
         final snackBar = SnackBar(content: Text('Invalid email or password'), backgroundColor: Colors.red);
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
       }
       else if (message == "customer's record not exist!") {
+        setState(() {
+          Navigator.pop(context);
+        });
         final snackBar =
         SnackBar(content: Text('Wrong Credentials Information'), backgroundColor: Colors.amber);
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -289,7 +297,13 @@ class LoginScreenState extends State<LoginScreen> {
         onPressed: () {
           if (_formKey.currentState!.validate()) {
             _formKey.currentState!.save();
-
+            setState(() {
+              CoolAlert.show(
+                  context: context,
+                  type: CoolAlertType.loading,
+                  text: "User Login",
+                  barrierDismissible: false);
+            });
             // If the form is valid, display a snackbar. In the real world,
             // you'd often call a server or save the information in a database.
             CustomerLogin();
