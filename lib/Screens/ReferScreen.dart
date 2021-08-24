@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:drycarwash/Screens/DashboardScreen.dart';
+
 import 'package:drycarwash/Screens/LoginScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -462,7 +463,10 @@ class ReferScreenState extends State<ReferScreen>{
                         children: [
                           ListTile(
                             onTap: () {
-                              Navigator.pop(context);
+                              Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => DashboardScreen()
+                              )
+                              );
                             },
                             leading: Icon(Icons.home, color: Colors.white),
                             title: Text(
@@ -498,6 +502,19 @@ class ReferScreenState extends State<ReferScreen>{
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
+                          Divider(),
+
+                          Container(
+                              alignment: Alignment.center,
+                              height: 50,
+                              child:Text("Version Number 1.1.1", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),)
+                          ),
+                          Container(
+                              alignment: Alignment.center,
+                              width: 50,
+                              height: 20,
+                              child:Text("Made With 💚 In Pakistan", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),)
+                          ),
                         ],
                       ))
                 ],
@@ -516,7 +533,7 @@ class ReferScreenState extends State<ReferScreen>{
                     ..setEntry(3, 2, 0.001)..setEntry(0, 3, 200 * val)
                     ..rotateY((pi / 6) * val),
                   child: Scaffold(
-                    backgroundColor: Color(0xffC3EDC5),
+
                     appBar: AppBar(
                       title: Text("Refer & Get Discount"),
                       backgroundColor: Color(0xff388E3C),

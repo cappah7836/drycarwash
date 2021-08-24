@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -29,7 +30,6 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class DashboardScreenState extends State<DashboardScreen> {
-
 
 
   String userName="";
@@ -154,6 +154,20 @@ class DashboardScreenState extends State<DashboardScreen> {
                               "Logout",
                               style: TextStyle(color: Colors.white),
                             ),
+                          ),
+
+                          Divider(),
+
+                          Container(
+                              alignment: Alignment.center,
+                              height: 50,
+                              child:Text("Version Number 1.1.1", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),)
+                          ),
+                          Container(
+                            alignment: Alignment.center,
+                            width: 50,
+                            height: 20,
+                            child:Text("Made With 💚 In Pakistan", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),)
                           ),
                         ],
                       ))
