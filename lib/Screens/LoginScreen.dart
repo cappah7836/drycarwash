@@ -60,12 +60,7 @@ class LoginScreenState extends State<LoginScreen> {
       print(response.data);
       print(response.data["obj"]);
 
-
-
-
-
       var message = response.data['message'];
-
 
       if (message == "Login Successfully") {
         SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -122,7 +117,9 @@ class LoginScreenState extends State<LoginScreen> {
       print("Error...");
     }
   }
+
   final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -141,31 +138,25 @@ class LoginScreenState extends State<LoginScreen> {
                 child: SingleChildScrollView(
                   physics: AlwaysScrollableScrollPhysics(),
                   padding: EdgeInsets.symmetric(horizontal: 25, vertical: 50),
-
                   child: Form(
                     key: _formKey,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Image.asset('assets/images/car_logo.png',
-                            scale: 1, width: 100, height: 100),
+                            scale: 1, width: 70, height: 70),
                         Image.asset('assets/images/drycarwashlogo.jpg',
-                            scale: 1, width: 200, height: 100),
-                        SizedBox(height: 20),
-
-
+                            scale: 1, width: 150, height: 80),
                               buildEmail(),
-                               SizedBox(height: 20),
-                              buildPassword(),
                               SizedBox(height: 10),
+                              buildPassword(),
                               FormError(errors: errors),
                               buildForgotPasswordbtn(),
                               buildLoginBtn(),
                               buildRegisterBtn(),
 
-                        SizedBox(height: 20),
                         Image.asset('assets/images/greenwaylogo.png',
-                            scale: 1, width: 100, height: 100),
+                            scale: 1, width: 80, height: 80),
                       ],
                     ),
                   ),
@@ -221,7 +212,6 @@ class LoginScreenState extends State<LoginScreen> {
       ],
     );
   }
-
   buildPassword() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -266,9 +256,9 @@ class LoginScreenState extends State<LoginScreen> {
       ],
     );
   }
-
   buildForgotPasswordbtn() {
     return Container(
+
       alignment: Alignment.centerRight,
       child: FlatButton(
         onPressed: () {
@@ -287,13 +277,11 @@ class LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-
   buildLoginBtn() {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10),
-      width: 150,
+      width: 100,
       child: ElevatedButton(
-
         onPressed: () {
           if (_formKey.currentState!.validate()) {
             _formKey.currentState!.save();

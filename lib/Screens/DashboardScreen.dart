@@ -167,7 +167,7 @@ class DashboardScreenState extends State<DashboardScreen> {
                             alignment: Alignment.center,
                             width: 50,
                             height: 20,
-                            child:Text("Made With 💚 In Pakistan", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),)
+                            child:Text("Save Water 💧 Save Life", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),)
                           ),
                         ],
                       ))
@@ -406,7 +406,7 @@ class DashboardScreenState extends State<DashboardScreen> {
                             Expanded(child: RaisedButton(
                             elevation: 5,
                                 onPressed:(){
-                                Share.share("I am $userName and inviting you to Use my Refferal link:$_url to get a reward of 20 points");
+                                Share.share("I am $userName and inviting you to Use my Refferal link:$_url to get a reward of 25 points");
                                 },
                             padding: EdgeInsets.all(15),
                             color: Color(0xff388E3C),

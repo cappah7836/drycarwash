@@ -1,3 +1,4 @@
+import 'package:cool_alert/cool_alert.dart';
 import 'package:dio/dio.dart';
 import 'package:drycarwash/components/constants.dart';
 import 'package:drycarwash/components/form_error.dart';
@@ -41,16 +42,22 @@ class ForgotScreenState extends State<ForgotScreen>{
   ResetPassMessage() async {
     var dioRequest = Dio();
     dioRequest.options.baseUrl = "http://116.90.122.234:7777/api/";
+    String editedPhone = number.text.replaceFirst(RegExp(r'^0+'), "");
     var formData = FormData.fromMap({
-      "mobileNo":"92"+number.text,
+      "mobileNo":"92"+editedPhone,
 
     });
+
+
     response = await dioRequest.post("Sale/ForgotMessage", data: formData);
     if (response.statusCode == 200) {
         print(response.data);
       var message = response.data['message'];
 
       if (message == "SMS sent successfully please check your Inbox!") {
+        setState(() {
+          Navigator.pop(context);
+        });
         final snackBar =
         SnackBar(content: Text('SMS sent successfully please check your messages'), backgroundColor: Colors.green);
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -58,11 +65,17 @@ class ForgotScreenState extends State<ForgotScreen>{
             MaterialPageRoute(builder: (context) => LoginScreen()));
 
       } else if(message == "Record not found against this Mobile No!") {
+        setState(() {
+          Navigator.pop(context);
+        });
         final snackBar = SnackBar(content: Text('Record not found against this mobile no'), backgroundColor: Colors.red);
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
       }
       else if (message == "Mobile No is not in Proper Format!") {
+        setState(() {
+          Navigator.pop(context);
+        });
         final snackBar =
         SnackBar(content: Text('Mobile No is not in Proper Format!'), backgroundColor: Colors.amber);
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -80,6 +93,8 @@ class ForgotScreenState extends State<ForgotScreen>{
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
+
+
     // TODO: implement build
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -102,8 +117,8 @@ class ForgotScreenState extends State<ForgotScreen>{
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Image.asset('assets/images/car_logo.png', scale: 1, width: 100,height: 100),
-                        Image.asset('assets/images/drycarwashlogo.jpg', scale: 1, width: 300,height: 120),
+                        Image.asset('assets/images/car_logo.png', scale: 1, width: 70,height: 70),
+                        Image.asset('assets/images/drycarwashlogo.jpg', scale: 1, width: 150,height: 100),
                         buildText(),
                         SizedBox(height: 10),
                         FormError(errors: errors),
@@ -126,15 +141,13 @@ class ForgotScreenState extends State<ForgotScreen>{
 
   buildMobile() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
 
-        SizedBox(height: 10),
+      children: <Widget>[
         TextFormField(
           controller: number,
           autofocus: true,
           inputFormatters: [
-            new LengthLimitingTextInputFormatter(10), // for mobile
+            new LengthLimitingTextInputFormatter(11), // for mobile
             new FilteringTextInputFormatter.deny(RegExp('[\\.|\\,]')),
             FilteringTextInputFormatter.allow(RegExp("[0-9]")),
           ],
@@ -143,7 +156,7 @@ class ForgotScreenState extends State<ForgotScreen>{
           onChanged: (value) {
             if (value.isNotEmpty) {
               removeError(error: KMobileNullError);
-            } else if (value.length == 10) {
+            } else if (value.length == 11) {
               removeError(error: kInvalidNoError);
             }
             else if (novalidatorRegExp.hasMatch(value)) {
@@ -155,7 +168,7 @@ class ForgotScreenState extends State<ForgotScreen>{
             if (value!.isEmpty) {
               addError(error: KMobileNullError);
               return "";
-            } else if (value.length < 10) {
+            } else if (value.length < 11) {
               addError(error: kInvalidNoError);
               return "";
             }
@@ -169,14 +182,17 @@ class ForgotScreenState extends State<ForgotScreen>{
                 color: Colors.black87
             ),
             decoration: InputDecoration(
+
                 border: OutlineInputBorder(),
                 contentPadding: EdgeInsets.only(top: 14),
-               prefixIcon: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 15),
+               prefixIcon: Container(
+                 width: 1,
+                margin: EdgeInsets.all(10),
+                alignment: Alignment.centerLeft,
                  child: Text(
-                   " (+92) ",
-                  style: TextStyle(color: Colors.black, fontSize: 15),
-                     ),
+                      "+92",
+                   style: TextStyle(fontSize: 16),
+                 ),
                    ),
                 hintText: 'Enter your Mobile No',
                 hintStyle: TextStyle(
@@ -213,7 +229,11 @@ class ForgotScreenState extends State<ForgotScreen>{
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!.save();
-
+                        CoolAlert.show(
+                            context: context,
+                            type: CoolAlertType.loading,
+                            text: "Sending Reset Message",
+                            barrierDismissible: false);
                         // If the form is valid, display a snackbar. In the real world,
                         // you'd often call a server or save the information in a database.
                         ResetPassMessage();
@@ -256,7 +276,7 @@ class ForgotScreenState extends State<ForgotScreen>{
         SizedBox(height: 5),
         Container(
           alignment: Alignment.centerLeft,
-         height: 50,
+         height: 20,
           child: Text(
             'Enter your mobile number and Submit the form',
             style: GoogleFonts.encodeSans(

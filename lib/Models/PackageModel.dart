@@ -1,6 +1,6 @@
 class PackageModel {
   final int? pID;
-   String pName;
+  String pName;
   final String? iDesc;
   final int? Item_Id;
   final double Price;
@@ -30,7 +30,7 @@ class PackageModel {
   }
 
   @override
-  String toString() => "$pName";
+  String toString() => "$pName \n=>Discounted Price: $Discounted_Rate";
 
 
   @override

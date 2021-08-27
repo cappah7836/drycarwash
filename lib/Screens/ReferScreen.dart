@@ -513,7 +513,7 @@ class ReferScreenState extends State<ReferScreen>{
                               alignment: Alignment.center,
                               width: 50,
                               height: 20,
-                              child:Text("Made With 💚 In Pakistan", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),)
+                              child:Text("Save Water 💧 Save Life", style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.white),)
                           ),
                         ],
                       ))

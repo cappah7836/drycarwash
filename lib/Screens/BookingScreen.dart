@@ -1,21 +1,16 @@
 import 'dart:async';
-
-
 import 'package:connectivity/connectivity.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:dio/dio.dart';
 import 'package:drycarwash/Models/PackageModel.dart';
 import 'package:drycarwash/Models/ServiceModel.dart';
-
 import 'package:drycarwash/Models/VehicleModel.dart';
 import 'package:drycarwash/Screens/AppointmentScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:intl/intl.dart';
 import 'package:select_dialog/select_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 class BookingScreen extends StatefulWidget {
   @override
@@ -25,25 +20,19 @@ class BookingScreen extends StatefulWidget {
   }
 }
 
-
 class BookingScreenState extends State<BookingScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   String? _type = "Service Station";
   int? uid;
   bool isLoading = true;
-
-  ////////////////////////////////////////////////////////
-
+  ///////////////////////////////////////////////////////
   getUserId()async{
     SharedPreferences pref = await SharedPreferences.getInstance();
     uid = pref.getInt("userid")?? 0;
     print(uid);
-    setState(() {
-      isLoading = false;
-    });
+
 
   }
-
 
 
 
@@ -52,11 +41,13 @@ class BookingScreenState extends State<BookingScreen> {
     // TODO: implement initState
     // _foundUsers = _allUsers;
     super.initState();
-    checkConnection();
-    getTimeSlot();
     getUserId();
+    checkConnection();
 
   }
+
+
+
   checkConnection() async{
     var connection = await Connectivity().checkConnectivity();
     if(connection == ConnectivityResult.none){
@@ -69,8 +60,14 @@ class BookingScreenState extends State<BookingScreen> {
           animType: CoolAlertAnimType.slideInDown,
           backgroundColor: Colors.redAccent);
     }
-    else{
+    else if(connection == ConnectivityResult.wifi){
+
+      isDisabled = false;
+      getTimeSlot();
       print("Internet access he");
+    }
+    else{
+      print("Meri galtion ka galat istamal");
     }
   }
   /*Upload Data to Server*/
@@ -135,13 +132,12 @@ class BookingScreenState extends State<BookingScreen> {
         address.text="";
         ex2?.Branch_name ="Choose Service Center";
         ex4?.name ="Vehicle";
+        ex1?.pName ="Package";
         if (ex1?.pName == ex1?.pName) {
           setState((){
             Visible = false;
           });
         }
-
-
 
       } else if(message == "Appointemnt Exist for selected Time chose another Time!") {
         setState(() {
@@ -172,11 +168,21 @@ class BookingScreenState extends State<BookingScreen> {
             backgroundColor: Colors.redAccent);
       }
 
-    } else {
+    }
+    else if(response.statusCode == 500){
+      CoolAlert.show(
+          context: context,
+          type: CoolAlertType.error,
+          text: "Server Not Responding",
+          confirmBtnColor: Colors.red,
+          barrierDismissible: false,
+          animType: CoolAlertAnimType.slideInDown,
+          backgroundColor: Colors.redAccent);
+    }
+    else {
       print("Error...");
     }
   }
-
 
   DateTime selectedDate = DateTime.now();
   final dayFormat = DateFormat('EEEE');
@@ -190,14 +196,23 @@ class BookingScreenState extends State<BookingScreen> {
   ////////////////////////////////////////////////////////////
   bool isVisible = false;
   bool Visible = false;
+  bool isDisabled = true;
   bool date = false;
   bool time = false;
   bool package = false;
   bool vehicle = false;
   bool service = false;
 
-  var response2;
+  String vehiclename="Vehicle";
+  String timename = "Time Slot";
+  String servicecenter = "Choose Service Center";
+  String packagename = "Package";
 
+
+
+  var response2;
+  int number = 0;
+  TextEditingController txt= new TextEditingController();
 
   getTimeSlot() async {
     var dio = Dio();
@@ -205,15 +220,25 @@ class BookingScreenState extends State<BookingScreen> {
     response2 = await dio.get("Sale/CalendarList");
     if (response2.statusCode == 200) {
 
+      setState(() {
+        isDisabled = false;
+      });
 
-    } else {
-      print("Error...");
+
+    } else if(response2.data == null) {
+      final snackBar =
+      SnackBar(content: Text('Server Not Responding!'), backgroundColor: Colors.red);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+    else{
+      print("Error");
     }
   }
+
   final TextEditingController vehicleno = TextEditingController();
   final TextEditingController remarks = TextEditingController();
   final TextEditingController address = TextEditingController();
-  bool res = false;
+
 
   String? val;
   getDay(){
@@ -222,7 +247,7 @@ class BookingScreenState extends State<BookingScreen> {
       return showDialog(
           context: context,
           builder: (BuildContext context) {
-            return AlertDialog(
+            return  AlertDialog(
               title: Text('Select Time Slot'),
               content: Container(
                 width: double.minPositive,
@@ -231,7 +256,11 @@ class BookingScreenState extends State<BookingScreen> {
                   shrinkWrap: true,
                   itemCount: response2.data.length=28,
                   itemBuilder: (BuildContext context, int index) {
-                    return ListTile(
+                    return isLoading == true
+                        ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                        : ListTile(
                       title: Text(response2.data[0]["AVAILABLE_DAY_TIME"][index].toString()),
                       onTap: () {
                         setState(() {
@@ -421,12 +450,11 @@ class BookingScreenState extends State<BookingScreen> {
     }
 
   }
-
+  int _count = 0;
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      key: _scaffoldKey,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Color(0xff388E3C),
@@ -439,161 +467,197 @@ class BookingScreenState extends State<BookingScreen> {
           ),
           onPressed: () {
             Navigator.pop(context);
-
           },
         ),
       ),
 
-      body:Container(
+      body:RefreshIndicator(
+        onRefresh: () async{
+          await Future.delayed(Duration(seconds: 2));
+         setState(() {
+        checkConnection();
+         });
+         print("Refresh Pressed");
+         return null;
+        },
+        child: Container(
 
-        child:SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          child:SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               child: Form(
                 key: _formKey,
-
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                              "Book your appointment", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                          )
-                      ),
-                      SizedBox(
-                        height: 25,
-                      ),
-                      Container(
-                          child:Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-
-                              Flexible(
-                                child: ListTile(
-                                  title: const Text('Service Station',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600),),
-                                  horizontalTitleGap: 0,
-                                  leading: Radio<String>(
-                                    value: "Service Station",
-                                    groupValue: _type,
-                                    onChanged: (String? value) {
-                                      setState(() {
-                                        if (value == "Service Station") {
-                                          setState((){
-                                            isVisible = false;
-                                          });
-                                        } else {
-                                          setState(() {
-                                            isVisible = true;
-                                          });
-                                        }
-                                        _type = value;
-
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ),
-                              Flexible(
-                                child: ListTile(
-                                  title: const Text('Home',style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),),
-                                  horizontalTitleGap: 0,
-                                  leading: Radio<String>(
-                                    value: "Home",
-                                    groupValue: _type,
-                                    onChanged: (String? value) {
-                                      if (value == "Home") {
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          "Book your appointment", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                        )
+                    ),
+                    SizedBox(
+                      height: 25,
+                    ),
+                    Container(
+                        child:Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Flexible(
+                              child: ListTile(
+                                title: const Text('Service Station',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600),),
+                                horizontalTitleGap: 0,
+                                leading: Radio<String>(
+                                  value: "Service Station",
+                                  groupValue: _type,
+                                  onChanged: (String? value) {
+                                    setState(() {
+                                      if (value == "Service Station") {
                                         setState((){
-                                          isVisible = true;
+                                          isVisible = false;
                                         });
                                       } else {
                                         setState(() {
-                                          isVisible = false;
+                                          isVisible = true;
                                         });
                                       }
-                                      setState(() {
-                                        _type = value;
-
-                                      });
-                                    },
-                                  ),
+                                      _type = value;
+                                    });
+                                  },
                                 ),
-                              ),
-                            ],
-                          )
-                      ),
-                      Visibility(
-                        visible: isVisible,
-                        child: Container(
-                          child:Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-
-                              SizedBox(height: 10.0),
-
-                              Expanded(
-                                // optional flex property if flex is 1 because the default flex is 1
-                                flex: 1,
-
-                                child: TextFormField(
-                                  controller: address,
-                                  autofocus: false,
-                                  decoration: InputDecoration(
-                                      labelText: 'Enter home address',
-                                      errorBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(color: Colors.red, width: 1))),
-                                ),
-
-                              ),
-
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10,),
-                      Container(
-                        child:Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Expanded(
-                              // optional flex property if flex is 1 because the default flex is 1
-                              flex: 1,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  _selectDate(context);
-                                  date = true;
-                                },
-
-                                child: Text("${selectedDate.toLocal()}".split(' ')[0]),
-                                style: ElevatedButton.styleFrom(primary: Color(0xff388E3C)),
                               ),
                             ),
-                            SizedBox(width: 10.0),
-                            Expanded(
-                              // optional flex property if flex is 1 because the default flex is 1
-                              flex: 1,
-                              child: ElevatedButton(onPressed: () {
-                            //time slot
-                                time = true;
-                              getDay();
-                              },
-                                child: Text(val ??"Time slot"),
-                                style: ElevatedButton.styleFrom(primary: Color(0xff388E3C)),
+                            Flexible(
+                              child: ListTile(
+                                title: const Text('Home',style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),),
+                                horizontalTitleGap: 0,
+                                leading: Radio<String>(
+                                  value: "Home",
+                                  groupValue: _type,
+                                  onChanged: (String? value) {
+                                    if (value == "Home") {
+                                      setState((){
+                                        isVisible = true;
+                                      });
+                                    } else {
+                                      setState(() {
+                                        isVisible = false;
+                                      });
+                                    }
+                                    setState(() {
+                                      _type = value;
+                                    });
+                                  },
+                                ),
                               ),
                             ),
                           ],
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Container(
+                        )
+                    ),
+                    Visibility(
+                      visible: isVisible,
+                      child: Container(
                         child:Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
+
+                            SizedBox(height: 10.0),
+
                             Expanded(
                               // optional flex property if flex is 1 because the default flex is 1
                               flex: 1,
-                              child: ElevatedButton(
-                                onPressed: () {
+
+                              child: TextFormField(
+                                controller: address,
+                                autofocus: false,
+                                decoration: InputDecoration(
+                                    labelText: 'Enter home address',
+                                    errorBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.red, width: 1))),
+                              ),
+
+                            ),
+
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10,),
+                    Container(
+                      child:Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Expanded(
+                            // optional flex property if flex is 1 because the default flex is 1
+                            flex: 1,
+                            child: ElevatedButton(
+                              onPressed: () {
+
+                                _selectDate(context);
+                                date = true;
+                              },
+
+                              child: Text("${selectedDate.toLocal()}".split(' ')[0]),
+                              style: ElevatedButton.styleFrom(primary: Color(0xff388E3C)),
+                            ),
+                          ),
+                          SizedBox(width: 10.0),
+                          Expanded(
+
+                            flex: 1,
+                            child: MaterialButton(
+                              color: isDisabled == true ? Colors.grey : Color(0xff388E3C),
+                              onPressed: () async{
+
+                                var connection = await Connectivity().checkConnectivity();
+                                if(connection == ConnectivityResult.none && isDisabled == true){
+                                  CoolAlert.show(
+                                      context: context,
+                                      type: CoolAlertType.error,
+                                      text: "No Internet Connection",
+                                      confirmBtnColor: Colors.red,
+                                      barrierDismissible: false,
+                                      animType: CoolAlertAnimType.slideInDown,
+                                      backgroundColor: Colors.redAccent);
+                                }
+                                else{
+                                  time = true;
+                                  getDay();
+                                }
+
+
+                              },
+                              child: Text(val ?? timename, style: TextStyle(color: Colors.white),),
+                              //     style: ElevatedButton.styleFrom(primary: Color(0xff388E3C)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      child:Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Expanded(
+                            // optional flex property if flex is 1 because the default flex is 1
+                            flex: 1,
+                            child: MaterialButton(
+                              color: isDisabled == true ? Colors.grey : Color(0xff388E3C),
+                              onPressed: () async{
+                                var connection = await Connectivity().checkConnectivity();
+                                if(connection == ConnectivityResult.none && isDisabled == true){
+                                  CoolAlert.show(
+                                      context: context,
+                                      type: CoolAlertType.error,
+                                      text: "No Internet Connection",
+                                      confirmBtnColor: Colors.red,
+                                      barrierDismissible: false,
+                                      animType: CoolAlertAnimType.slideInDown,
+                                      backgroundColor: Colors.redAccent);
+                                }
+                                else{
                                   package = true;
                                   SelectDialog.showModal<PackageModel>(
                                     context,
@@ -617,80 +681,107 @@ class BookingScreenState extends State<BookingScreen> {
 
 
                                   );
+                                }
 
-                                },
-                                child: Text(
-                                    "Package"),
-                                style: ElevatedButton.styleFrom(primary: Color(0xff388E3C)),
-                              ),
+                              },
+                              child: Text(ex1?.pName?? packagename, style: TextStyle(color: Colors.white)),
+
                             ),
-                            SizedBox(width: 10.0),
+                          ),
+                          SizedBox(width: 10.0),
+                          Expanded(
+                            // optional flex property if flex is 1 because the default flex is 1
+                            flex: 1,
+                            child: MaterialButton(
+                              color: isDisabled == true ? Colors.grey : Color(0xff388E3C),
+                              onPressed: () async{
+                                var connection = await Connectivity().checkConnectivity();
+                                if(connection == ConnectivityResult.none && isDisabled == true){
+                                  CoolAlert.show(
+                                      context: context,
+                                      type: CoolAlertType.error,
+                                      text: "No Internet Connection",
+                                      confirmBtnColor: Colors.red,
+                                      barrierDismissible: false,
+                                      animType: CoolAlertAnimType.slideInDown,
+                                      backgroundColor: Colors.redAccent);
+                                }
+                                else{
+                                  SelectDialog.showModal<VehicleModel>(
+                                    context,
+                                    label: "Select Vehicle",
+                                    selectedValue: ex4,
+                                    onFind: (String filter) => getData(filter),
+                                    onChange: (VehicleModel selected) {
+                                      setState(() {
+                                        ex4 = selected;
+                                        vehicle = true;
+                                      });
+                                    },
+                                  );
+                                }
+
+                              },
+                              child: Text(ex4?.name ?? vehiclename,style:TextStyle(color: Colors.white)),
+
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      // optional flex property if flex is 1 because the default flex is 1
+                      child: MaterialButton(
+                        color: isDisabled == true ? Colors.grey : Color(0xff388E3C),
+                        onPressed: () async{
+                          var connection = await Connectivity().checkConnectivity();
+                          if(connection == ConnectivityResult.none && isDisabled == true){
+                            CoolAlert.show(
+                                context: context,
+                                type: CoolAlertType.error,
+                                text: "No Internet Connection",
+                                confirmBtnColor: Colors.red,
+                                barrierDismissible: false,
+                                animType: CoolAlertAnimType.slideInDown,
+                                backgroundColor: Colors.redAccent);
+                          }
+                          else{
+                            service = true;
+                            SelectDialog.showModal<ServiceModel>(
+                              context,
+                              label: "Select Service Center",
+                              selectedValue: ex2,
+                              onFind: (String filter) => getServiceData(filter),
+                              onChange: (ServiceModel selected) {
+                                setState(() {
+                                  ex2 = selected;
+                                });
+                              },
+                            );
+                          }
+                        },
+                        child: Text(ex2?.Branch_name ?? servicecenter, style: TextStyle(color: Colors.white),),
+
+                      ),
+
+                    ),
+                    SizedBox(height: 10),
+                    Visibility(
+                      visible: Visible,
+                      child: Container(
+                        child:Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+
+                            SizedBox(height: 10.0),
+
                             Expanded(
                               // optional flex property if flex is 1 because the default flex is 1
                               flex: 1,
-                              child: ElevatedButton(onPressed: () {
-                                vehicle = true;
-                                SelectDialog.showModal<VehicleModel>(
-                                  context,
-                                  label: "Select Vehicle",
-                                  selectedValue: ex4,
-                                  onFind: (String filter) => getData(filter),
-                                  onChange: (VehicleModel selected) {
-                                    setState(() {
-                                      ex4 = selected;
-                                    });
-                                  },
-
-
-                                );
-                              },
-                                child: Text(ex4?.name ?? "Vehicle"),
-                                style: ElevatedButton.styleFrom(primary: Color(0xff388E3C)),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: double.infinity,
-                              // optional flex property if flex is 1 because the default flex is 1
-                              child: ElevatedButton(onPressed: () {
-                                service = true;
-                                SelectDialog.showModal<ServiceModel>(
-                                  context,
-                                  label: "Select Service Center",
-                                  selectedValue: ex2,
-                                  onFind: (String filter) => getServiceData(filter),
-                                  onChange: (ServiceModel selected) {
-                                    setState(() {
-                                      ex2 = selected;
-                                    });
-                                  },
-
-                                );
-                              },
-                                child: Text(ex2?.Branch_name ??"Choose Service Center"),
-                                style: ElevatedButton.styleFrom(primary: Color(0xff388E3C)),
-                              ),
-
-                      ),
-                      SizedBox(height: 10),
-                      Visibility(
-                        visible: Visible,
-                        child: Container(
-                          child:Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-
-                              SizedBox(height: 10.0),
-
-                              Expanded(
-                                // optional flex property if flex is 1 because the default flex is 1
-                                flex: 1,
-                                child:  Card(
+                              child:  Card(
                                   color: Colors.white,
-                                  elevation: 2,
-                                  margin: EdgeInsets.symmetric(vertical: 0),
+                                  elevation: 4,
                                   child:Column(
                                     children: [
                                       SizedBox(
@@ -715,88 +806,67 @@ class BookingScreenState extends State<BookingScreen> {
                                         height: 10,),
                                       Padding(
                                         padding: EdgeInsets.only(top: 5),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                        child: Column(
+
                                           children: [
                                             SizedBox(
                                               width: 10,
                                             ),
 
                                             Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.center,
+
                                               children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      "Actual Amount",
-                                                      style: TextStyle(
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 14,
-                                                        color: Colors.redAccent,
+                                                Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        "Actual Amount",
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 14,
+                                                          color: Colors.redAccent,
+                                                        ),
                                                       ),
-                                                    ),
-                                                    SizedBox(width: 188,),
-                                                    Align(
-                                                      alignment: Alignment.centerRight,
-                                                      child: Column(
-                                                        mainAxisAlignment:
-                                                        MainAxisAlignment.center,
-                                                        crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
-                                                        children: [
-                                                          Text(ex1?.Price.toString()??"",
-                                                            style: TextStyle(
-                                                              fontWeight: FontWeight.w400,
-                                                              fontSize: 14,
-                                                              color: Colors.red,
-                                                              decoration: TextDecoration.lineThrough
-                                                            ),
-                                                          ),
-
-                                                        ],
+                                                      Text(ex1?.Price.toString()??"",
+                                                        style: TextStyle(
+                                                            fontWeight: FontWeight.w400,
+                                                            fontSize: 14,
+                                                            color: Colors.red,
+                                                            decoration: TextDecoration.lineThrough
+                                                        ),
                                                       ),
-                                                    ),
 
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
 
                                                 SizedBox(height: 10,),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      "Discounted Rate",
-                                                      style: TextStyle(
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 14,
-                                                        color: Colors.green,
-                                                      ),
-                                                    ),
-                                                    SizedBox(width: 180,),
-                                                    Column(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                      crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                      children: [
-                                                        Text(ex1?.Discounted_Rate.toString()??"",
-                                                          style: TextStyle(
-                                                            fontWeight: FontWeight.w400,
-                                                            fontSize: 14,
-                                                            color: Colors.green,
-                                                          ),
+                                                Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        "Discounted Rate",
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 14,
+                                                          color: Colors.green,
                                                         ),
-
-                                                      ],
-                                                    ),
-                                                  ],
+                                                      ),
+                                                      Text(ex1?.Discounted_Rate.toString()??"",
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.w400,
+                                                          fontSize: 14,
+                                                          color: Colors.green,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ],
                                             ),
@@ -810,115 +880,149 @@ class BookingScreenState extends State<BookingScreen> {
                                   )
 
 
-                                ),
-
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Container(
-                        child:Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-
-                            SizedBox(height: 10.0),
-
-                            Expanded(
-                              // optional flex property if flex is 1 because the default flex is 1
-                              flex: 1,
-                              child: TextFormField(
-                                controller: vehicleno,
-                                autofocus: false,
-                                decoration: InputDecoration(
-                                    labelText: 'Enter vehicle number',
-                                    errorBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.red, width: 1))),
                               ),
 
                             ),
                           ],
                         ),
                       ),
-                      Container(
-                        child:Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      child:Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
 
-                            SizedBox(height: 10.0),
+                          SizedBox(height: 10.0),
 
-                            Expanded(
-                              // optional flex property if flex is 1 because the default flex is 1
-                              flex: 1,
-
-                              child: TextFormField(
-                                controller: remarks,
+                          Expanded(
+                            // optional flex property if flex is 1 because the default flex is 1
+                            flex: 1,
+                            child: TextFormField(
+                              controller: vehicleno,
                               autofocus: false,
-                                decoration: InputDecoration(
-                                    labelText: 'Remarks',
-                                    errorBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.red, width: 1))),
-                              ),
+                              decoration: InputDecoration(
+                                  labelText: 'Enter vehicle number',
+                                  errorBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.red, width: 1))),
+                            ),
+
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      child:Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+
+                          SizedBox(height: 10.0),
+
+                          Expanded(
+                            // optional flex property if flex is 1 because the default flex is 1
+                            flex: 1,
+
+                            child: TextFormField(
+                              controller: remarks,
+                              autofocus: false,
+                              decoration: InputDecoration(
+                                  labelText: 'Remarks',
+                                  errorBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.red, width: 1))),
+                            ),
 
 
+
+                          ),
+
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 15,),
+                    Container(
+
+                      child:Row(
+                        children: <Widget>[
+                          SizedBox(height: 10.0),
+                          Expanded(
+                            // optional flex property if flex is 1 because the default flex is 1
+                            flex: 1,
+                            child: Text(
+                                "Please select the date, time slot, package, vehicle, location and hit the submit button to confirm your appointment."
 
                             ),
 
-                          ],
-                        ),
+                          ),
+
+                        ],
                       ),
-                      SizedBox(height: 15,),
-                      Container(
-
-                        child:Row(
-                          children: <Widget>[
-                            SizedBox(height: 10.0),
-                            Expanded(
-                              // optional flex property if flex is 1 because the default flex is 1
-                              flex: 1,
-                              child: Text(
-                                  "Please select the date, time slot, package, vehicle, location and hit the submit button to confirm your appointment."
-
-                              ),
-
-                            ),
-
-                          ],
-                        ),
+                    ),
+                    SizedBox(height: 10,),
+                    Container(
+                      alignment: Alignment.centerRight,
+                      // optional flex property if flex is 1 because the default flex is 1
+                      child: ElevatedButton(onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AppointmentScreen(uid: uid,)));
+                      },
+                        child: Text("GO TO LIST"),
+                        style: ElevatedButton.styleFrom(primary: Colors.amber),
                       ),
-                      SizedBox(height: 10,),
-                      Container(
-                        alignment: Alignment.centerRight,
-                        // optional flex property if flex is 1 because the default flex is 1
-                        child: ElevatedButton(onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AppointmentScreen(uid: uid,)));
-                        },
-                          child: Text("GO TO LIST"),
-                          style: ElevatedButton.styleFrom(primary: Colors.amber),
-                        ),
 
-                      ),
-                      SizedBox(height: 100,),
-                    ],
-                  ),
+                    ),
+                    SizedBox(height: 10,),
+                    Text(
+                      "Swipe Down to Refresh",
+                      style: TextStyle(fontSize: 15.0),
+                    ),
+
+                  ],
+                ),
               ),
+            ),
           ),
         ),
       ),
-
-
-      floatingActionButton: FloatingActionButton.extended(
+ floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
 
+
+           if(timename=="Time Slot" && val == null){
+            final snackBar =
+            SnackBar(content: Text('Please select time slot.'), backgroundColor: Colors.red);
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
+           else if(packagename=="Package" && ex1?.pName == null){
+             final snackBar =
+             SnackBar(content: Text('Please Select a Package.'), backgroundColor: Colors.red);
+             ScaffoldMessenger.of(context).showSnackBar(snackBar);
+           }
+        else if(vehiclename=="Vehicle" && ex4?.name == null){
+          final snackBar =
+          SnackBar(content: Text('Please select a vehicle.'), backgroundColor: Colors.red);
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
+          else if(servicecenter=="Choose Service Center" && ex2?.Branch_name == null){
+            final snackBar =
+            SnackBar(content: Text('Please Choose Service Center'), backgroundColor: Colors.red);
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
+          else if( _type=="Home" && address.text == ""){
+             final snackBar =
+             SnackBar(content: Text('Please Enter home address'), backgroundColor: Colors.red);
+             ScaffoldMessenger.of(context).showSnackBar(snackBar);
+           }
+
+          else{
             setState(() {
               CoolAlert.show(
                   context: context,
                   type: CoolAlertType.loading,
                   text: "Booking Appointment",
-              barrierDismissible: false);
+                  barrierDismissible: false);
             });
             SendAppointment();
+          }
+
 
         },
         label: const Text('Submit'),
@@ -1016,28 +1120,7 @@ class BookingScreenState extends State<BookingScreen> {
       setState(() {
         selectedDate = picked;
       });
-  /*  showModalBottomSheet(
-        context: context,
-        builder: (BuildContext builder) {
-          return Container(
-            height: MediaQuery.of(context).copyWith().size.height / 3,
-            color: Colors.white,
-            child: CupertinoDatePicker(
 
-              mode: CupertinoDatePickerMode.date,
-              onDateTimeChanged: (picked) {
-                if (picked != null && picked != selectedDate)
-                  setState(() {
-                    selectedDate = picked;
-                  });
-              },
-              initialDateTime: selectedDate,
-              minimumYear: 2021,
-              maximumYear: 2050,
-
-            ),
-          );
-        });*/
   }
 
   //////////////////////////////////////////////////////
@@ -1049,6 +1132,15 @@ class BookingScreenState extends State<BookingScreen> {
         "Name": filter
       },
     );
+    if(response.statusCode == 200){
+      setState(() {
+        isDisabled = false;
+      });
+    }
+    else{
+      print("good");
+    }
+
 
     var models = VehicleModel.fromJsonList(response.data);
     return models;
@@ -1062,6 +1154,15 @@ class BookingScreenState extends State<BookingScreen> {
         "PackageName": filter
       },
     );
+    if(response.statusCode == 200){
+      setState(() {
+        isDisabled = false;
+      });
+    }
+    else{
+      print("good");
+    }
+
 
     var models = PackageModel.fromJsonList(response.data);
     return models;
@@ -1069,15 +1170,23 @@ class BookingScreenState extends State<BookingScreen> {
 
   /*  Service Search*/
   Future<List<ServiceModel>> getServiceData(String filter) async {
-    var response = await Dio().get(
-      "http://116.90.122.234:7777/api/Sale/GetBranchList",
-      queryParameters: {
-        "Branch_name": filter
-      },
-    );
+    var response = await Dio().get("http://116.90.122.234:7777/api/Sale/GetBranchList", queryParameters: {"Branch_name": filter},);
 
-    var models = ServiceModel.fromJsonList(response.data);
-    return models;
+   if(response.statusCode == 200){
+     setState(() {
+       isDisabled = false;
+     });
+   }
+   else{
+  print("good");
+   }
+
+      var models = ServiceModel.fromJsonList(response.data);
+      return models;
+
+
+
+
   }
 
 

@@ -44,6 +44,8 @@ dependencies:
   avatar_glow: ^2.0.1
   change_app_package_name: ^1.0.0
   share: ^2.0.4
+  badges: ^2.0.1
+  liquid_pull_to_refresh: ^3.0.0
 
 
 

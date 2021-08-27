@@ -114,10 +114,11 @@ class MapScreenState extends State<ProfileScreen>{
   UpdatePhone() async {
     var dioRequest = Dio();
     dioRequest.options.baseUrl = "http://116.90.122.234:7777/api/";
+    String editedPhone = phone.text.replaceFirst(RegExp(r'^0+'), "");
     var formData = FormData.fromMap({
       "EMAIL":uemail,
       "CUSTOMER_ID":uid,
-      "MOBILE_NO":"92"+phone.text,
+      "MOBILE_NO":"92"+editedPhone,
       "CUSTOMER_NAME":uname,
 
     });
@@ -511,7 +512,7 @@ class MapScreenState extends State<ProfileScreen>{
                                             SizedBox(height: 10,),
                                             TextFormField(
                                               inputFormatters: [
-                                                new LengthLimitingTextInputFormatter(10), // for mobile
+                                                new LengthLimitingTextInputFormatter(11), // for mobile
                                                 new FilteringTextInputFormatter.deny(RegExp('[\\.|\\,]')),
                                                 FilteringTextInputFormatter.allow(RegExp("[0-9]")),
                                               ],
@@ -522,7 +523,7 @@ class MapScreenState extends State<ProfileScreen>{
                                                 if (value == null || value.isEmpty) {
                                                   return 'Please enter a number';
                                                 }
-                                                else if(value.length < 10){
+                                                else if(value.length < 11){
                                                   return "Please enter a valid number";
                                                 }
                                                 return null;
@@ -530,13 +531,16 @@ class MapScreenState extends State<ProfileScreen>{
                                               decoration: InputDecoration(
                                                   border: OutlineInputBorder(),
                                                   hintText: "New mobile number",
-                                                prefixIcon: Padding(
-                                                  padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 15),
+                                                prefixIcon: Container(
+                                                  width: 1,
+                                                  margin: EdgeInsets.all(10),
+                                                  alignment: Alignment.centerLeft,
                                                   child: Text(
-                                                    " (+92) ",
-                                                    style: TextStyle(color: Colors.black, fontSize: 15),
+                                                    "+92",
+                                                    style: TextStyle(fontSize: 16),
                                                   ),
-                                                ),),
+                                                ),
+                                              ),
 
                                             ),
 

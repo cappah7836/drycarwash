@@ -1,6 +1,7 @@
 
 
 
+import 'package:cool_alert/cool_alert.dart';
 import 'package:dio/dio.dart';
 import 'package:drycarwash/Screens//LoginScreen.dart';
 import 'package:drycarwash/components/constants.dart';
@@ -54,11 +55,12 @@ class RegisterScreenState extends State<RegisterScreen> {
   CustomerRegistration() async {
     var dioRequest = Dio();
     dioRequest.options.baseUrl = "http://116.90.122.234:7777/api/";
+    String editedPhone = phone.text.replaceFirst(RegExp(r'^0+'), "");
     var formData = FormData.fromMap({
       "EMAIL":email.text,
       "CUSTOMER_PASSWORD":password.text,
       "CUSTOMER_NAME":name.text,
-      "MOBILE_NO":"92"+ phone.text,
+      "MOBILE_NO":"92"+editedPhone,
       "RECEIVEABLE_ACCOUNT_ID": "1",
 
 
@@ -75,6 +77,9 @@ class RegisterScreenState extends State<RegisterScreen> {
 
 
       if (message == "Customer added successfully") {
+        setState(() {
+          Navigator.pop(context);
+        });
         final snackBar =
         SnackBar(content: Text('User created successfully.'), backgroundColor: Colors.green);
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -83,11 +88,17 @@ class RegisterScreenState extends State<RegisterScreen> {
 
 
       } else if(message == "Customer Exist with same ContactNO Or Email!") {
+        setState(() {
+          Navigator.pop(context);
+        });
         final snackBar = SnackBar(content: Text('Customer Already Exists!'), backgroundColor: Colors.red);
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
       }
       else if (message == "Please enter complete customer Info!") {
+        setState(() {
+          Navigator.pop(context);
+        });
         final snackBar =
         SnackBar(content: Text('Please enter complete customer Info!'), backgroundColor: Colors.amber);
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -153,7 +164,6 @@ class RegisterScreenState extends State<RegisterScreen> {
                       buildEmail(),
                       SizedBox(height: 10),
                       buildMobileNo(),
-                      Text("Please enter number starting from 323*******"),
                       SizedBox(height: 10),
                       buildPassword(),
                       SizedBox(height: 10),
@@ -270,7 +280,7 @@ class RegisterScreenState extends State<RegisterScreen> {
          controller: phone,
          onSaved: (input) => uphone = input!.replaceFirst(new RegExp(r'^0+'), ''),
          inputFormatters: [
-           new LengthLimitingTextInputFormatter(10), // for mobile
+           new LengthLimitingTextInputFormatter(11), // for mobile
            /*  new BlacklistingTextInputFormatter(new RegExp('0')),*/
            FilteringTextInputFormatter.allow(RegExp("[0-9a-zA-Z]")),
          ],
@@ -278,11 +288,25 @@ class RegisterScreenState extends State<RegisterScreen> {
            if (value.isNotEmpty) {
              removeError(error: KMobileNullError);
            }
+           else if (value.length == 11) {
+             removeError(error: kInvalidNoError);
+           }
+           else if (novalidatorRegExp.hasMatch(value)) {
+             removeError(error: kInvalidNoError);
+           }
            return null;
          },
          validator: (value) {
            if (value!.isEmpty) {
              addError(error: KMobileNullError);
+             return "";
+           }
+           else if (value.length < 11) {
+             addError(error: kInvalidNoError);
+             return "";
+           }
+           else if (!novalidatorRegExp.hasMatch(value)) {
+             addError(error: kInvalidNoError);
              return "";
            }
            return null;
@@ -294,12 +318,9 @@ class RegisterScreenState extends State<RegisterScreen> {
             decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 contentPadding: EdgeInsets.only(top: 14),
-                prefixIcon: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 15),
-                  child: Text(
-                    " (+92) ",
-                    style: TextStyle(color: Colors.black, fontSize: 15),
-                  ),
+                prefixIcon: Icon(
+                    Icons.phone,
+                    color: Color(0xff5D5D59)
                 ),
                 hintText: 'Enter your mobile no',
                 hintStyle: TextStyle(
@@ -429,12 +450,18 @@ class RegisterScreenState extends State<RegisterScreen> {
   buildRegisterBtn(){
     return Container(
       padding: EdgeInsets.symmetric(vertical: 15),
-      width: 150,
+      width: 120,
       child: ElevatedButton(
         onPressed: (){
           if (_formKey.currentState!.validate()) {
             _formKey.currentState!.save();
-
+            setState(() {
+              CoolAlert.show(
+                  context: context,
+                  type: CoolAlertType.loading,
+                  text: "Registering User",
+                  barrierDismissible: false);
+            });
             // If the form is valid, display a snackbar. In the real world,
             // you'd often call a server or save the information in a database.
             CustomerRegistration();

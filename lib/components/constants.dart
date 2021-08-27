@@ -16,6 +16,7 @@ const String KNameNullError = "Please Enter a name";
 const String KMobileNullError = "Please Enter a mobile no";
 const String kInvalidNoError = "Please Enter Valid number";
 final RegExp novalidatorRegExp = RegExp(r"(^(?:3)?[0-9]{10,12}$)");
+final RegExp phoneregexp = RegExp(r'^0+');
 
 
 
