@@ -72,7 +72,6 @@ class AppointmentScreenState extends State<AppointmentScreen>{
           },
         ),
       ),
-
       body: DefaultTabController(
         length: 2,
         child: Scaffold(

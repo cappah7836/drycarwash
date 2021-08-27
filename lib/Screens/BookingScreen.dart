@@ -35,7 +35,6 @@ class BookingScreenState extends State<BookingScreen> {
   }
 
 
-
   @override
   void initState() {
     // TODO: implement initState
@@ -45,9 +44,6 @@ class BookingScreenState extends State<BookingScreen> {
     checkConnection();
 
   }
-
-
-
   checkConnection() async{
     var connection = await Connectivity().checkConnectivity();
     if(connection == ConnectivityResult.none){
@@ -471,227 +467,270 @@ class BookingScreenState extends State<BookingScreen> {
         ),
       ),
 
-      body:RefreshIndicator(
-        onRefresh: () async{
-          await Future.delayed(Duration(seconds: 2));
-         setState(() {
-        checkConnection();
-         });
-         print("Refresh Pressed");
-         return null;
-        },
-        child: Container(
 
-          child:SingleChildScrollView(
-            physics: AlwaysScrollableScrollPhysics(),
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          "Book your appointment", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-                        )
-                    ),
-                    SizedBox(
-                      height: 25,
-                    ),
-                    Container(
-                        child:Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Flexible(
-                              child: ListTile(
-                                title: const Text('Service Station',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600),),
-                                horizontalTitleGap: 0,
-                                leading: Radio<String>(
-                                  value: "Service Station",
-                                  groupValue: _type,
-                                  onChanged: (String? value) {
-                                    setState(() {
-                                      if (value == "Service Station") {
-                                        setState((){
-                                          isVisible = false;
-                                        });
-                                      } else {
-                                        setState(() {
-                                          isVisible = true;
-                                        });
-                                      }
-                                      _type = value;
-                                    });
-                                  },
-                                ),
-                              ),
-                            ),
-                            Flexible(
-                              child: ListTile(
-                                title: const Text('Home',style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),),
-                                horizontalTitleGap: 0,
-                                leading: Radio<String>(
-                                  value: "Home",
-                                  groupValue: _type,
-                                  onChanged: (String? value) {
-                                    if (value == "Home") {
-                                      setState((){
-                                        isVisible = true;
-                                      });
-                                    } else {
-                                      setState(() {
-                                        isVisible = false;
-                                      });
-                                    }
-                                    setState(() {
-                                      _type = value;
-                                    });
-                                  },
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
-                    ),
-                    Visibility(
-                      visible: isVisible,
-                      child: Container(
-                        child:Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
+      body:Padding(
+          padding: MediaQuery.of(context).viewInsets,
+        child: RefreshIndicator(
+              onRefresh: () async{
+                await Future.delayed(Duration(seconds: 2));
+                setState(() {
+                  checkConnection();
+                });
+                print("Refresh Pressed");
+                return null;
+              },
+              child: Container(
 
-                            SizedBox(height: 10.0),
-
-                            Expanded(
-                              // optional flex property if flex is 1 because the default flex is 1
-                              flex: 1,
-
-                              child: TextFormField(
-                                controller: address,
-                                autofocus: false,
-                                decoration: InputDecoration(
-                                    labelText: 'Enter home address',
-                                    errorBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.red, width: 1))),
-                              ),
-
-                            ),
-
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10,),
-                    Container(
-                      child:Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Expanded(
-                            // optional flex property if flex is 1 because the default flex is 1
-                            flex: 1,
-                            child: ElevatedButton(
-                              onPressed: () {
-
-                                _selectDate(context);
-                                date = true;
-                              },
-
-                              child: Text("${selectedDate.toLocal()}".split(' ')[0]),
-                              style: ElevatedButton.styleFrom(primary: Color(0xff388E3C)),
-                            ),
+                child:SingleChildScrollView(
+                  physics: AlwaysScrollableScrollPhysics(),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Book your appointment", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                              )
                           ),
-                          SizedBox(width: 10.0),
-                          Expanded(
-
-                            flex: 1,
-                            child: MaterialButton(
-                              color: isDisabled == true ? Colors.grey : Color(0xff388E3C),
-                              onPressed: () async{
-
-                                var connection = await Connectivity().checkConnectivity();
-                                if(connection == ConnectivityResult.none && isDisabled == true){
-                                  CoolAlert.show(
-                                      context: context,
-                                      type: CoolAlertType.error,
-                                      text: "No Internet Connection",
-                                      confirmBtnColor: Colors.red,
-                                      barrierDismissible: false,
-                                      animType: CoolAlertAnimType.slideInDown,
-                                      backgroundColor: Colors.redAccent);
-                                }
-                                else{
-                                  time = true;
-                                  getDay();
-                                }
-
-
-                              },
-                              child: Text(val ?? timename, style: TextStyle(color: Colors.white),),
-                              //     style: ElevatedButton.styleFrom(primary: Color(0xff388E3C)),
-                            ),
+                          SizedBox(
+                            height: 25,
                           ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Container(
-                      child:Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Expanded(
-                            // optional flex property if flex is 1 because the default flex is 1
-                            flex: 1,
-                            child: MaterialButton(
-                              color: isDisabled == true ? Colors.grey : Color(0xff388E3C),
-                              onPressed: () async{
-                                var connection = await Connectivity().checkConnectivity();
-                                if(connection == ConnectivityResult.none && isDisabled == true){
-                                  CoolAlert.show(
-                                      context: context,
-                                      type: CoolAlertType.error,
-                                      text: "No Internet Connection",
-                                      confirmBtnColor: Colors.red,
-                                      barrierDismissible: false,
-                                      animType: CoolAlertAnimType.slideInDown,
-                                      backgroundColor: Colors.redAccent);
-                                }
-                                else{
-                                  package = true;
-                                  SelectDialog.showModal<PackageModel>(
-                                    context,
-                                    label: "Select Package",
-                                    selectedValue: ex1,
-                                    onFind: (String filter) => getPackageData(filter),
-                                    onChange: (PackageModel selected) {
-                                      setState(() {
-                                        if (ex1?.pName == ex1?.pName) {
-                                          setState((){
-                                            Visible = true;
-                                          });
-                                        } else {
+                          Container(
+                              child:Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Flexible(
+                                    child: ListTile(
+                                      title: const Text('Service Station',style: TextStyle(fontSize: 15,fontWeight: FontWeight.w600),),
+                                      horizontalTitleGap: 0,
+                                      leading: Radio<String>(
+                                        value: "Service Station",
+                                        groupValue: _type,
+                                        onChanged: (String? value) {
                                           setState(() {
-                                            Visible = false;
+                                            if (value == "Service Station") {
+                                              setState((){
+                                                isVisible = false;
+                                              });
+                                            } else {
+                                              setState(() {
+                                                isVisible = true;
+                                              });
+                                            }
+                                            _type = value;
                                           });
-                                        }
-                                        ex1 = selected;
-                                      });
-                                    },
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: ListTile(
+                                      title: const Text('Home',style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),),
+                                      horizontalTitleGap: 0,
+                                      leading: Radio<String>(
+                                        value: "Home",
+                                        groupValue: _type,
+                                        onChanged: (String? value) {
+                                          if (value == "Home") {
+                                            setState((){
+                                              isVisible = true;
+                                            });
+                                          } else {
+                                            setState(() {
+                                              isVisible = false;
+                                            });
+                                          }
+                                          setState(() {
+                                            _type = value;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                          ),
+                          Visibility(
+                            visible: isVisible,
+                            child: Container(
+                              child:Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
 
+                                  SizedBox(height: 10.0),
 
-                                  );
-                                }
+                                  Expanded(
+                                    // optional flex property if flex is 1 because the default flex is 1
+                                    flex: 1,
 
-                              },
-                              child: Text(ex1?.pName?? packagename, style: TextStyle(color: Colors.white)),
+                                    child: TextFormField(
+                                      controller: address,
+                                      autofocus: false,
+                                      decoration: InputDecoration(
+                                          labelText: 'Enter home address',
+                                          errorBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.red, width: 1))),
+                                    ),
 
+                                  ),
+
+                                ],
+                              ),
                             ),
                           ),
-                          SizedBox(width: 10.0),
-                          Expanded(
+                          SizedBox(height: 10,),
+                          Container(
+                            child:Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Expanded(
+                                  // optional flex property if flex is 1 because the default flex is 1
+                                  flex: 1,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+
+                                      _selectDate(context);
+                                      date = true;
+                                    },
+
+                                    child: Text("${selectedDate.toLocal()}".split(' ')[0]),
+                                    style: ElevatedButton.styleFrom(primary: Color(0xff388E3C)),
+                                  ),
+                                ),
+                                SizedBox(width: 10.0),
+                                Expanded(
+
+                                  flex: 1,
+                                  child: MaterialButton(
+                                    color: isDisabled == true ? Colors.grey : Color(0xff388E3C),
+                                    onPressed: () async{
+
+                                      var connection = await Connectivity().checkConnectivity();
+                                      if(connection == ConnectivityResult.none && isDisabled == true){
+                                        CoolAlert.show(
+                                            context: context,
+                                            type: CoolAlertType.error,
+                                            text: "No Internet Connection",
+                                            confirmBtnColor: Colors.red,
+                                            barrierDismissible: false,
+                                            animType: CoolAlertAnimType.slideInDown,
+                                            backgroundColor: Colors.redAccent);
+                                      }
+                                      else{
+                                        time = true;
+                                        getDay();
+                                      }
+
+
+                                    },
+                                    child: Text(val ?? timename, style: TextStyle(color: Colors.white),),
+                                    //     style: ElevatedButton.styleFrom(primary: Color(0xff388E3C)),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Container(
+                            child:Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Expanded(
+                                  // optional flex property if flex is 1 because the default flex is 1
+                                  flex: 1,
+                                  child: MaterialButton(
+                                    color: isDisabled == true ? Colors.grey : Color(0xff388E3C),
+                                    onPressed: () async{
+                                      var connection = await Connectivity().checkConnectivity();
+                                      if(connection == ConnectivityResult.none && isDisabled == true){
+                                        CoolAlert.show(
+                                            context: context,
+                                            type: CoolAlertType.error,
+                                            text: "No Internet Connection",
+                                            confirmBtnColor: Colors.red,
+                                            barrierDismissible: false,
+                                            animType: CoolAlertAnimType.slideInDown,
+                                            backgroundColor: Colors.redAccent);
+                                      }
+                                      else{
+                                        package = true;
+                                        SelectDialog.showModal<PackageModel>(
+                                          context,
+                                          label: "Select Package",
+                                          selectedValue: ex1,
+                                          onFind: (String filter) => getPackageData(filter),
+                                          onChange: (PackageModel selected) {
+                                            setState(() {
+                                              if (ex1?.pName == ex1?.pName) {
+                                                setState((){
+                                                  Visible = true;
+                                                });
+                                              } else {
+                                                setState(() {
+                                                  Visible = false;
+                                                });
+                                              }
+                                              ex1 = selected;
+                                            });
+                                          },
+
+
+                                        );
+                                      }
+
+                                    },
+                                    child: Text(ex1?.pName?? packagename, style: TextStyle(color: Colors.white)),
+
+                                  ),
+                                ),
+                                SizedBox(width: 10.0),
+                                Expanded(
+                                  // optional flex property if flex is 1 because the default flex is 1
+                                  flex: 1,
+                                  child: MaterialButton(
+                                    color: isDisabled == true ? Colors.grey : Color(0xff388E3C),
+                                    onPressed: () async{
+                                      var connection = await Connectivity().checkConnectivity();
+                                      if(connection == ConnectivityResult.none && isDisabled == true){
+                                        CoolAlert.show(
+                                            context: context,
+                                            type: CoolAlertType.error,
+                                            text: "No Internet Connection",
+                                            confirmBtnColor: Colors.red,
+                                            barrierDismissible: false,
+                                            animType: CoolAlertAnimType.slideInDown,
+                                            backgroundColor: Colors.redAccent);
+                                      }
+                                      else{
+                                        SelectDialog.showModal<VehicleModel>(
+                                          context,
+                                          label: "Select Vehicle",
+                                          selectedValue: ex4,
+                                          onFind: (String filter) => getData(filter),
+                                          onChange: (VehicleModel selected) {
+                                            setState(() {
+                                              ex4 = selected;
+                                              vehicle = true;
+                                            });
+                                          },
+                                        );
+                                      }
+
+                                    },
+                                    child: Text(ex4?.name ?? vehiclename,style:TextStyle(color: Colors.white)),
+
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            width: double.infinity,
                             // optional flex property if flex is 1 because the default flex is 1
-                            flex: 1,
                             child: MaterialButton(
                               color: isDisabled == true ? Colors.grey : Color(0xff388E3C),
                               onPressed: () async{
@@ -707,281 +746,243 @@ class BookingScreenState extends State<BookingScreen> {
                                       backgroundColor: Colors.redAccent);
                                 }
                                 else{
-                                  SelectDialog.showModal<VehicleModel>(
+                                  service = true;
+                                  SelectDialog.showModal<ServiceModel>(
                                     context,
-                                    label: "Select Vehicle",
-                                    selectedValue: ex4,
-                                    onFind: (String filter) => getData(filter),
-                                    onChange: (VehicleModel selected) {
+                                    label: "Select Service Center",
+                                    selectedValue: ex2,
+                                    onFind: (String filter) => getServiceData(filter),
+                                    onChange: (ServiceModel selected) {
                                       setState(() {
-                                        ex4 = selected;
-                                        vehicle = true;
+                                        ex2 = selected;
                                       });
                                     },
                                   );
                                 }
-
                               },
-                              child: Text(ex4?.name ?? vehiclename,style:TextStyle(color: Colors.white)),
+                              child: Text(ex2?.Branch_name ?? servicecenter, style: TextStyle(color: Colors.white),),
 
                             ),
+
                           ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      // optional flex property if flex is 1 because the default flex is 1
-                      child: MaterialButton(
-                        color: isDisabled == true ? Colors.grey : Color(0xff388E3C),
-                        onPressed: () async{
-                          var connection = await Connectivity().checkConnectivity();
-                          if(connection == ConnectivityResult.none && isDisabled == true){
-                            CoolAlert.show(
-                                context: context,
-                                type: CoolAlertType.error,
-                                text: "No Internet Connection",
-                                confirmBtnColor: Colors.red,
-                                barrierDismissible: false,
-                                animType: CoolAlertAnimType.slideInDown,
-                                backgroundColor: Colors.redAccent);
-                          }
-                          else{
-                            service = true;
-                            SelectDialog.showModal<ServiceModel>(
-                              context,
-                              label: "Select Service Center",
-                              selectedValue: ex2,
-                              onFind: (String filter) => getServiceData(filter),
-                              onChange: (ServiceModel selected) {
-                                setState(() {
-                                  ex2 = selected;
-                                });
-                              },
-                            );
-                          }
-                        },
-                        child: Text(ex2?.Branch_name ?? servicecenter, style: TextStyle(color: Colors.white),),
+                          SizedBox(height: 10),
+                          Visibility(
+                            visible: Visible,
+                            child: Container(
+                              child:Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
 
-                      ),
+                                  SizedBox(height: 10.0),
 
-                    ),
-                    SizedBox(height: 10),
-                    Visibility(
-                      visible: Visible,
-                      child: Container(
-                        child:Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-
-                            SizedBox(height: 10.0),
-
-                            Expanded(
-                              // optional flex property if flex is 1 because the default flex is 1
-                              flex: 1,
-                              child:  Card(
-                                  color: Colors.white,
-                                  elevation: 4,
-                                  child:Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 10,),
-                                      Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.start,
-                                        children: [
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Flexible(child: Text(ex1?.pName?? "", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),)),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 10,),
-                                      Container(
-                                        height: 1,
-                                        color: Colors.grey[400],
-                                      ),
-                                      SizedBox(
-                                        height: 10,),
-                                      Padding(
-                                        padding: EdgeInsets.only(top: 5),
-                                        child: Column(
-
+                                  Expanded(
+                                    // optional flex property if flex is 1 because the default flex is 1
+                                    flex: 1,
+                                    child:  Card(
+                                        color: Colors.white,
+                                        elevation: 4,
+                                        child:Column(
                                           children: [
                                             SizedBox(
-                                              width: 10,
-                                            ),
-
-                                            Column(
-
+                                              height: 10,),
+                                            Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.start,
                                               children: [
-                                                Padding(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                    MainAxisAlignment.spaceBetween,
-                                                    children: [
-                                                      Text(
-                                                        "Actual Amount",
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.bold,
-                                                          fontSize: 14,
-                                                          color: Colors.redAccent,
-                                                        ),
-                                                      ),
-                                                      Text(ex1?.Price.toString()??"",
-                                                        style: TextStyle(
-                                                            fontWeight: FontWeight.w400,
-                                                            fontSize: 14,
-                                                            color: Colors.red,
-                                                            decoration: TextDecoration.lineThrough
-                                                        ),
-                                                      ),
-
-                                                    ],
-                                                  ),
+                                                SizedBox(
+                                                  width: 10,
                                                 ),
-
-                                                SizedBox(height: 10,),
-                                                Padding(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                    MainAxisAlignment.spaceBetween,
-                                                    children: [
-                                                      Text(
-                                                        "Discounted Rate",
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.bold,
-                                                          fontSize: 14,
-                                                          color: Colors.green,
-                                                        ),
-                                                      ),
-                                                      Text(ex1?.Discounted_Rate.toString()??"",
-                                                        style: TextStyle(
-                                                          fontWeight: FontWeight.w400,
-                                                          fontSize: 14,
-                                                          color: Colors.green,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
+                                                Flexible(child: Text(ex1?.pName?? "", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),)),
                                               ],
                                             ),
+                                            SizedBox(
+                                              height: 10,),
+                                            Container(
+                                              height: 1,
+                                              color: Colors.grey[400],
+                                            ),
+                                            SizedBox(
+                                              height: 10,),
+                                            Padding(
+                                              padding: EdgeInsets.only(top: 5),
+                                              child: Column(
+
+                                                children: [
+                                                  SizedBox(
+                                                    width: 10,
+                                                  ),
+
+                                                  Column(
+
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                          MainAxisAlignment.spaceBetween,
+                                                          children: [
+                                                            Text(
+                                                              "Actual Amount",
+                                                              style: TextStyle(
+                                                                fontWeight: FontWeight.bold,
+                                                                fontSize: 14,
+                                                                color: Colors.redAccent,
+                                                              ),
+                                                            ),
+                                                            Text(ex1?.Price.toString()??"",
+                                                              style: TextStyle(
+                                                                  fontWeight: FontWeight.w400,
+                                                                  fontSize: 14,
+                                                                  color: Colors.red,
+                                                                  decoration: TextDecoration.lineThrough
+                                                              ),
+                                                            ),
+
+                                                          ],
+                                                        ),
+                                                      ),
+
+                                                      SizedBox(height: 10,),
+                                                      Padding(
+                                                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                          MainAxisAlignment.spaceBetween,
+                                                          children: [
+                                                            Text(
+                                                              "Discounted Rate",
+                                                              style: TextStyle(
+                                                                fontWeight: FontWeight.bold,
+                                                                fontSize: 14,
+                                                                color: Colors.green,
+                                                              ),
+                                                            ),
+                                                            Text(ex1?.Discounted_Rate.toString()??"",
+                                                              style: TextStyle(
+                                                                fontWeight: FontWeight.w400,
+                                                                fontSize: 14,
+                                                                color: Colors.green,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 10,),
+
                                           ],
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 10,),
-
-                                    ],
-                                  )
+                                        )
 
 
+                                    ),
+
+                                  ),
+                                ],
                               ),
-
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Container(
-                      child:Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
+                          ),
+                          SizedBox(height: 10),
+                          Container(
+                            child:Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
 
-                          SizedBox(height: 10.0),
+                                SizedBox(height: 10.0),
 
-                          Expanded(
+                                Expanded(
+                                  // optional flex property if flex is 1 because the default flex is 1
+                                  flex: 1,
+                                  child: TextFormField(
+                                    controller: vehicleno,
+                                    autofocus: false,
+                                    decoration: InputDecoration(
+                                        labelText: 'Enter vehicle number',
+                                        errorBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.red, width: 1))),
+                                  ),
+
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            child:Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+
+                                SizedBox(height: 10.0),
+
+                                Expanded(
+                                  // optional flex property if flex is 1 because the default flex is 1
+                                  flex: 1,
+
+                                  child: TextFormField(
+                                    controller: remarks,
+                                    autofocus: false,
+                                    decoration: InputDecoration(
+                                        labelText: 'Remarks',
+                                        errorBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.red, width: 1))),
+                                  ),
+
+
+
+                                ),
+
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 15,),
+                          Container(
+
+                            child:Row(
+                              children: <Widget>[
+                                SizedBox(height: 10.0),
+                                Expanded(
+                                  // optional flex property if flex is 1 because the default flex is 1
+                                  flex: 1,
+                                  child: Text(
+                                      "Please select the date, time slot, package, vehicle, location and hit the submit button to confirm your appointment."
+
+                                  ),
+
+                                ),
+
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 10,),
+                          Container(
+                            alignment: Alignment.centerRight,
                             // optional flex property if flex is 1 because the default flex is 1
-                            flex: 1,
-                            child: TextFormField(
-                              controller: vehicleno,
-                              autofocus: false,
-                              decoration: InputDecoration(
-                                  labelText: 'Enter vehicle number',
-                                  errorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.red, width: 1))),
+                            child: ElevatedButton(onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AppointmentScreen(uid: uid,)));
+                            },
+                              child: Text("GO TO LIST"),
+                              style: ElevatedButton.styleFrom(primary: Colors.amber),
                             ),
 
                           ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      child:Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-
-                          SizedBox(height: 10.0),
-
-                          Expanded(
-                            // optional flex property if flex is 1 because the default flex is 1
-                            flex: 1,
-
-                            child: TextFormField(
-                              controller: remarks,
-                              autofocus: false,
-                              decoration: InputDecoration(
-                                  labelText: 'Remarks',
-                                  errorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.red, width: 1))),
-                            ),
-
-
-
+                          SizedBox(height: 10,),
+                          Text(
+                            "Swipe Down to Refresh",
+                            style: TextStyle(fontSize: 15.0),
                           ),
 
                         ],
                       ),
                     ),
-                    SizedBox(height: 15,),
-                    Container(
-
-                      child:Row(
-                        children: <Widget>[
-                          SizedBox(height: 10.0),
-                          Expanded(
-                            // optional flex property if flex is 1 because the default flex is 1
-                            flex: 1,
-                            child: Text(
-                                "Please select the date, time slot, package, vehicle, location and hit the submit button to confirm your appointment."
-
-                            ),
-
-                          ),
-
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 10,),
-                    Container(
-                      alignment: Alignment.centerRight,
-                      // optional flex property if flex is 1 because the default flex is 1
-                      child: ElevatedButton(onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AppointmentScreen(uid: uid,)));
-                      },
-                        child: Text("GO TO LIST"),
-                        style: ElevatedButton.styleFrom(primary: Colors.amber),
-                      ),
-
-                    ),
-                    SizedBox(height: 10,),
-                    Text(
-                      "Swipe Down to Refresh",
-                      style: TextStyle(fontSize: 15.0),
-                    ),
-
-                  ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
       ),
+
  floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
 
@@ -1188,12 +1189,6 @@ class BookingScreenState extends State<BookingScreen> {
 
 
   }
-
-
-
-
-
-
 
 
 }

@@ -97,6 +97,7 @@ class _FirstScreenState extends State<FirstScreen> {
           backgroundColor: Colors.redAccent);
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,18 +115,15 @@ class _FirstScreenState extends State<FirstScreen> {
                               "Your Booked Appointments", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                             ),
                      ),
-
                        Expanded(
                          child: ListView.builder(
                                       itemCount: responseoffers.data["obj"].length,
                                       itemBuilder: (context, index) => Container(
-
                                         child: Card(
                                           color: Colors.white,
                                           elevation: 5,
                                           child:responseoffers.data["obj"][index]["isactive"].toString() == "true"
                                               ? Column(
-
                                                 children: [
                                                   SizedBox(
                                                     height: 10,),
@@ -239,11 +237,9 @@ class _FirstScreenState extends State<FirstScreen> {
 
                                                     ),
                                                   ),
-
                                                 ],
                                               )
-
-                                              :Container(),
+                                              :Container(  )
                                         ),
                                       ),
                                     ),
