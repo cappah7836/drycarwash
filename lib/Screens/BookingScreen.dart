@@ -480,7 +480,6 @@ class BookingScreenState extends State<BookingScreen> {
                 return null;
               },
               child: Container(
-
                 child:SingleChildScrollView(
                   physics: AlwaysScrollableScrollPhysics(),
                   child: Padding(

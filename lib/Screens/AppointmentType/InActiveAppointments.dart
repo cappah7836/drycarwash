@@ -75,8 +75,8 @@ class _SecondScreenState extends State<SecondScreen> {
                   color: Colors.white,
                   elevation: 5,
                   margin: EdgeInsets.symmetric(vertical: 5),
-                  child:responseoffers.data["obj"][index]['cancel'].toString() ==
-                      "true"
+                  child:responseoffers.data["obj"][index]['isactive'].toString() ==
+                      "false"
                       ? Column(
 
                     children: [

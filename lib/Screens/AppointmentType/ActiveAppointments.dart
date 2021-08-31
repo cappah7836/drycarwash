@@ -123,7 +123,7 @@ class _FirstScreenState extends State<FirstScreen> {
                                           color: Colors.white,
                                           elevation: 5,
                                           child:responseoffers.data["obj"][index]["isactive"].toString() == "true"
-                                              ? Column(
+                                              ?Column(
                                                 children: [
                                                   SizedBox(
                                                     height: 10,),
@@ -239,7 +239,8 @@ class _FirstScreenState extends State<FirstScreen> {
                                                   ),
                                                 ],
                                               )
-                                              :Container(  )
+                                              :Column()
+
                                         ),
                                       ),
                                     ),

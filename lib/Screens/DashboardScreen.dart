@@ -1,5 +1,6 @@
 
 
+import 'package:dio/dio.dart';
 import 'package:drycarwash/Screens/AboutUsScreen.dart';
 import 'package:drycarwash/Screens/AppointmentScreen.dart';
 import 'package:drycarwash/Screens/BookingScreen.dart';
@@ -19,6 +20,7 @@ import 'dart:math';
 
 
 import 'LoginScreen.dart';
+import 'RedeemScreen.dart';
 import 'ReferScreen.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -53,10 +55,44 @@ class DashboardScreenState extends State<DashboardScreen> {
     // _foundUsers = _allUsers;
     super.initState();
     getUserData();
-
-
+    ReferPoints();
   }
+  var response;
+  var addedpoints, usedpoints;
 
+  ReferPoints() async {
+    var dioRequest = Dio();
+    dioRequest.options.baseUrl = "http://116.90.122.234:7777/api/";
+    var formData = FormData.fromMap({
+      "CustomerId": userid,
+    });
+
+    response =
+    await dioRequest.post("Sale/GetCustomerPointsAccount", data: formData);
+    if (response.statusCode == 200) {
+      setState(() {
+        addedpoints = response.data["obj"][0]["pointS_ADDED"].toDouble();
+        usedpoints = response.data["obj"][0]["poinT_USED"].toDouble();
+        print(addedpoints);
+        print(usedpoints);
+      });
+
+      var message = response.data['message'];
+
+      if (message == "No Record Found") {
+        final snackBar = SnackBar(
+            content: Text('No Record of Referral Points'),
+            backgroundColor: Colors.amber);
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      } else if (message == "Customer Not Exist") {
+        final snackBar = SnackBar(
+            content: Text('Error Fetching Data'), backgroundColor: Colors.red);
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    } else {
+      print("Error...");
+    }
+  }
 
 
 
@@ -129,15 +165,37 @@ class DashboardScreenState extends State<DashboardScreen> {
                           ),
                           ListTile(
                             onTap:  userName.isNotEmpty? () {
+                              Navigator.pop(context);
                               Navigator.push(context, MaterialPageRoute(
                                   builder: (context) => ReferScreen(user: userName, id: userid)
+                              )
+                              );
+                            }:null,
+                            leading: Icon(Icons.supervised_user_circle, color: Colors
+                                .white),
+                            title: Text(
+                              "Refer & Get Discount",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                          ListTile(
+                            onTap:  userName.isNotEmpty? () {
+                              Navigator.pop(context);
+                              Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => RedeemScreen(user: userName, id: userid)
                               )
                               );
                             }:null,
                             leading: Icon(Icons.attach_money, color: Colors
                                 .white),
                             title: Text(
-                              "Refer & Get Discount",
+                              "Redeem Points",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            trailing: Text(
+                              addedpoints != null
+                                  ? addedpoints.toString()
+                                  : "0",
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
@@ -208,14 +266,34 @@ class DashboardScreenState extends State<DashboardScreen> {
 
                       children: [
                         Container(
+                            alignment: Alignment(0, -0.5),
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width,
+                            height: MediaQuery
+                                .of(context)
+                                .size
+                                .height,
+                            decoration: BoxDecoration(
+                                color: const Color(0xffececec),
+                                image: DecorationImage(
+                                  image: AssetImage('assets/images/wash.jpg'),
+                                  fit: BoxFit.cover,
+                                  colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.dstATop),
+                                )
+                            )
+                        ),
+                        Container(
                           padding: const EdgeInsets.all(10.0),
                           width: double.infinity,
+
 
                           child: GridView.count(
                             crossAxisCount: 2,
                             children: [
                               Container(
-                                color: Color(0xffC3EDC5),
+
                                 margin: const EdgeInsets.all(10.0),
                                 child: InkWell(
                                   onTap: () {
@@ -247,7 +325,7 @@ class DashboardScreenState extends State<DashboardScreen> {
 
                               ),
                               Container(
-                                color: Color(0xffC3EDC5),
+
                                 margin: const EdgeInsets.all(10.0),
                                 child: InkWell(
                                   onTap: () {
@@ -277,7 +355,7 @@ class DashboardScreenState extends State<DashboardScreen> {
 
                               ),
                               Container(
-                                color: Color(0xffC3EDC5),
+
                                 margin: const EdgeInsets.all(10.0),
                                 child: InkWell(
                                   onTap: () {
@@ -305,7 +383,7 @@ class DashboardScreenState extends State<DashboardScreen> {
                                 ),
                               ),
                               Container(
-                                color: Color(0xffC3EDC5),
+
                                 margin: const EdgeInsets.all(10.0),
                                 child: InkWell(
                                   onTap: () {
@@ -335,7 +413,7 @@ class DashboardScreenState extends State<DashboardScreen> {
 
                               ),
                               Container(
-                                color: Color(0xffC3EDC5),
+
                                 margin: const EdgeInsets.all(10.0),
                                 child: InkWell(
                                   onTap: () {
@@ -365,7 +443,7 @@ class DashboardScreenState extends State<DashboardScreen> {
                                 ),
                               ),
                               Container(
-                                color: Color(0xffC3EDC5),
+
                                 margin: const EdgeInsets.all(10.0),
                                 child: InkWell(
                                   onTap: () {
@@ -396,6 +474,7 @@ class DashboardScreenState extends State<DashboardScreen> {
 
                             ],
                           ),
+
                         ),
 
                         Align(
@@ -403,6 +482,7 @@ class DashboardScreenState extends State<DashboardScreen> {
                           child: Container(
                             child: Row(
                                 children: [
+
                             Expanded(child: RaisedButton(
                             elevation: 5,
                                 onPressed:(){
