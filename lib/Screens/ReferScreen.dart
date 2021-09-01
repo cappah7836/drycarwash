@@ -1,20 +1,17 @@
-import 'dart:math';
 
-import 'package:badges/badges.dart';
 import 'package:dio/dio.dart';
-import 'package:drycarwash/Screens/DashboardScreen.dart';
 
-import 'package:drycarwash/Screens/LoginScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pie_chart/pie_chart.dart';
-import 'package:share/share.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:lottie/lottie.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 
-import 'RedeemScreen.dart';
 
 class ReferScreen extends StatefulWidget {
   final String user;
@@ -77,16 +74,13 @@ class ReferScreenState extends State<ReferScreen> {
 
   bool _loadChart = false;
   double value = 0;
-  static const _yurl =
-      "https://www.youtube.com/channel/UClhedk-dSnqDdw_uCsp0GyA";
-  static const _furl = "https://www.facebook.com/drycarwashpk/";
-  static const _iurl = "https://www.instagram.com/drycarwashpk/";
+
   static const _url = "https://drycarwashcustomer.page.link/DZP9ScjqvvSepsat9";
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-
+/*
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(
@@ -575,18 +569,447 @@ class ReferScreenState extends State<ReferScreen> {
           )
         ],
       ),
+    );*/
+
+    return new Scaffold(
+      body:SingleChildScrollView(
+
+   child: Stack(
+          children: [
+            Container(
+              height: 520,
+              decoration: BoxDecoration(
+
+                  gradient: LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    colors: [
+                      Color(0xff388E3C),
+                      Colors.green,
+                    ],
+                  ),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(40),
+                  bottomRight: Radius.circular(40),
+                ),
+              ),
+
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                top:80,
+                right: 20,
+                left: 20,
+              ),
+              height: 200,
+              width: double.infinity,
+
+
+              child: Column(
+                children: [
+
+                  Center(
+                    child: Text("Refer your friends",style: GoogleFonts.kanit(fontSize: 30, color: Colors.white, fontWeight: FontWeight.w600), ),
+                  ),
+                  Center(
+                    child: Text("and Earn",style: GoogleFonts.kanit(fontSize: 30, color: Colors.white, fontWeight: FontWeight.w600), ),
+                  ),
+                  Container(
+                  height: 80,
+                    child: Lottie.asset('assets/gifs/gift.json',
+                      repeat: true,
+                      reverse: true,
+                      animate: true,),
+                  ),
+                  Container(
+                    child: Column(
+
+                      children: [
+                        Center(
+                          child: Text( addedpoints != null
+                              ? addedpoints.toString()
+                              : "0",style: GoogleFonts.kanit(fontSize: 20, color: Colors.white, fontWeight: FontWeight.w600), ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset("assets/images/coin.png", width: 19,),
+                            SizedBox(width: 10,),
+                            Center(
+                              child: Text("Total Points",style: GoogleFonts.kanit(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w400), ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                ],
+              ),
+
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                top: 290,
+              ),
+
+              height: 40,
+              width: double.infinity,
+              child: Center(
+                child: Text(
+                  'Your friend gets 20 points on sign up\n and, you get 10 points too everytime.',
+                  style: GoogleFonts.kanit(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w600),
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: (){
+                Clipboard.setData(ClipboardData(text: "I am ${widget.user} and inviting you to Use my Refferal link:$_url to get a reward of 20 points"));
+                final snackBar =
+                SnackBar(content: Text('Copied'), backgroundColor: Colors.grey);
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              },
+              child: Container(
+              margin: EdgeInsets.only(
+                  top: 350,
+                right: 50,
+                left: 50
+                ),
+                decoration: BoxDecoration(
+                    color: Colors.white, borderRadius: BorderRadius.circular(20)),
+
+                width: double.infinity,
+                child: Column(
+                  children: [
+                   Padding(
+                     padding: const EdgeInsets.all(8.0),
+                     child: Column(
+
+                       children: [
+                         Text(
+                           'Your referral code',
+                           style: GoogleFonts.kanit(fontSize: 12, color: Colors.green, fontWeight: FontWeight.w600),
+                         ),
+                         Row(
+                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                           children: [
+                             Text(
+                               'DZP9ScjqvvSepsat9',
+                               style: GoogleFonts.kanit(fontSize: 25, color: Colors.green, fontWeight: FontWeight.w600),
+                             ),
+                             Icon(Icons.copy),
+                           ]
+
+                         ),
+
+                       ],
+
+
+                     ),
+                   ),
+
+
+                  ],
+
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                  top: 435,
+                  right: 50,
+                  left: 50
+              ),
+              width: double.infinity,
+              child: Column(
+                children: [
+                  Text(
+                    'Share your Referral Code via',
+                    style: GoogleFonts.kanit(fontSize: 18, color: Colors.white, fontWeight: FontWeight.w600),
+                  ),
+
+
+                ],
+
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                top: 480,
+              ),
+               child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                 child: Row(
+                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                   children: [
+                     GestureDetector(
+                       onTap:(){
+
+                       },
+                       child: Container(
+
+                         height: 40,
+                         width: 110,
+                         decoration: BoxDecoration(
+                           color: Colors.white,
+                           borderRadius: BorderRadius.circular(30),
+
+                           boxShadow: [
+                             BoxShadow(
+                               color: Colors.pink.withOpacity(0.3),
+                               spreadRadius: 3,
+                               blurRadius: 7,
+                               offset: Offset(0, 3),
+                             ),
+                           ],
+
+                         ),
+                         child: Row(
+                           mainAxisAlignment: MainAxisAlignment.spaceAround,
+                           children: [
+                             Icon(
+                               FontAwesomeIcons.instagram,
+                               color: Colors.pinkAccent,
+                               size: 20,
+                             ),
+                             Center(
+                               child: Text(
+                                 'Instagram',
+                                 style: TextStyle(
+                                   color: Colors.pink,
+                                   fontSize: 14,
+                                   fontWeight: FontWeight.bold,
+                                 ),
+                               ),
+                             ),
+                           ],
+                         ),
+                       ),
+                     ),
+                     Container(
+
+                       height: 40,
+                       width: 110,
+                       decoration: BoxDecoration(
+                         color: Color(0xff0873f5),
+                         borderRadius: BorderRadius.circular(30),
+
+                         boxShadow: [
+                           BoxShadow(
+                             color: Colors.blue.withOpacity(0.5),
+                             spreadRadius: 3,
+                             blurRadius: 7,
+                             offset: Offset(0, 3),
+                           ),
+                         ],
+
+                       ),
+                       child: Row(
+                         mainAxisAlignment: MainAxisAlignment.spaceAround,
+                         children: [
+                           Icon(
+                             FontAwesomeIcons.facebook,
+                             color: Colors.white,
+                             size: 20,
+                           ),
+                           Center(
+                             child: Text(
+                               'Facebook',
+                               style: TextStyle(
+                                 color: Colors.white,
+                                 fontSize: 14,
+                                 fontWeight: FontWeight.bold,
+                               ),
+                             ),
+                           ),
+                         ],
+                       ),
+                     ),
+                     Container(
+
+                       height: 40,
+                       width: 110,
+                       decoration: BoxDecoration(
+                         color: Color(0xff1ea800),
+                         borderRadius: BorderRadius.circular(30),
+
+                         boxShadow: [
+                           BoxShadow(
+                             color: Colors.green.withOpacity(0.5),
+                             spreadRadius: 3,
+                             blurRadius: 7,
+                             offset: Offset(0, 3),
+                           ),
+                         ],
+
+                       ),
+                       child: Row(
+                         mainAxisAlignment: MainAxisAlignment.spaceAround,
+                         children: [
+                           Icon(
+                             FontAwesomeIcons.whatsapp,
+                             color: Colors.white,
+                             size: 20,
+                           ),
+                           Center(
+                             child: Text(
+                               'WhatsApp',
+                               style: TextStyle(
+                                 color: Colors.white,
+                                 fontSize: 14,
+                                 fontWeight: FontWeight.bold,
+                               ),
+                             ),
+                           ),
+                         ],
+                       ),
+                     ),
+                   ],
+                 ),
+                ),
+
+
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                top: 550,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Container(
+                  width: double.infinity,
+                  child: Column(
+                    children: [
+                      Text(
+                        'Frequently Asked Questions',
+                        style: GoogleFonts.kanit(fontSize: 18, color: Colors.black, fontWeight: FontWeight.w600),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: GestureDetector(
+                          onTap: (){
+                            showAnimatedDialog(
+                              context: context,
+                              barrierDismissible: true,
+                              builder: (BuildContext context) {
+                                return ClassicGeneralDialogWidget(
+                                  titleText: 'Refer & Earn',
+                                  contentText: 'It is a program where you can get points to redeem offers.',
+                                  positiveText: "Ok",
+                                  positiveTextStyle: GoogleFonts.kanit(fontSize: 15, color: Colors.green),
+                                  onPositiveClick: () {
+                                    Navigator.of(context).pop();
+                                  },
+
+                                );
+                              },
+                              animationType: DialogTransitionType.size,
+                              curve: Curves.linear,
+                            );
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'What is Refer and Earn Program?',
+                                style: GoogleFonts.kanit(fontSize: 15, color: Colors.black54, fontWeight: FontWeight.w600),
+                              ),
+                              Icon(Icons.keyboard_arrow_down_rounded),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: GestureDetector(
+                          onTap: (){
+                            showAnimatedDialog(
+                              context: context,
+                              barrierDismissible: true,
+                              builder: (BuildContext context) {
+                                return ClassicGeneralDialogWidget(
+                                  titleText: 'How it works',
+                                  contentText: 'You invite your friend with your referral code then you get 10 points everytime and your friend gets 20 points.',
+                                  positiveText: "Ok",
+                                  positiveTextStyle: GoogleFonts.kanit(fontSize: 15, color: Colors.green),
+                                  onPositiveClick: () {
+                                    Navigator.of(context).pop();
+                                  },
+
+                                );
+                              },
+                              animationType: DialogTransitionType.size,
+                              curve: Curves.linear,
+                            );
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'How it works?',
+                                style: GoogleFonts.kanit(fontSize: 15, color: Colors.black54, fontWeight: FontWeight.w600),
+                              ),
+                              Icon(Icons.keyboard_arrow_down_rounded),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: GestureDetector(
+                          onTap: (){
+                            showAnimatedDialog(
+                              context: context,
+                              barrierDismissible: true,
+                              builder: (BuildContext context) {
+                                return ClassicGeneralDialogWidget(
+                                  titleText: 'Point Usage',
+                                  contentText: 'You can use points to get free service depending on points',
+                                  positiveText: "Ok",
+                                  positiveTextStyle: GoogleFonts.kanit(fontSize: 15, color: Colors.green),
+                                  onPositiveClick: () {
+                                    Navigator.of(context).pop();
+                                  },
+
+                                );
+                              },
+                              animationType: DialogTransitionType.size,
+                              curve: Curves.linear,
+                            );
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Where can I use these Points',
+                                style: GoogleFonts.kanit(fontSize: 15, color: Colors.black54, fontWeight: FontWeight.w600),
+                              ),
+                              Icon(Icons.keyboard_arrow_down_rounded),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+
+                  ),
+                ),
+              ),
+
+
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.arrow_back),
+        backgroundColor: Colors.green,
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
     );
   }
 
-  void _launchURL() async => await canLaunch(_furl)
-      ? await launch(_furl)
-      : throw 'Could not launch $_furl';
 
-  void _launchURLinsta() async => await canLaunch(_iurl)
-      ? await launch(_iurl)
-      : throw 'Could not launch $_iurl';
-
-  void _launchURLyoutube() async => await canLaunch(_yurl)
-      ? await launch(_yurl)
-      : throw 'Could not launch $_yurl';
 }

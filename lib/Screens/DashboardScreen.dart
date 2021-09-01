@@ -165,7 +165,7 @@ class DashboardScreenState extends State<DashboardScreen> {
                           ),
                           ListTile(
                             onTap:  userName.isNotEmpty? () {
-                              Navigator.pop(context);
+
                               Navigator.push(context, MaterialPageRoute(
                                   builder: (context) => ReferScreen(user: userName, id: userid)
                               )
@@ -180,7 +180,7 @@ class DashboardScreenState extends State<DashboardScreen> {
                           ),
                           ListTile(
                             onTap:  userName.isNotEmpty? () {
-                              Navigator.pop(context);
+
                               Navigator.push(context, MaterialPageRoute(
                                   builder: (context) => RedeemScreen(user: userName, id: userid)
                               )
